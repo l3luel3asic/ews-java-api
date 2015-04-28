@@ -33,8 +33,6 @@
     
     <version>2.0-SNAPSHOT</version>
 
-    <packaging>bundle</packaging>
-
     <name>Exchange Web Services Java API</name>
     <description>Exchange Web Services (EWS) Java API</description>
 
@@ -167,13 +165,13 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-osgi</artifactId>
+            <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
         </dependency>
         
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore-osgi</artifactId>
+            <artifactId>httpcore</artifactId>
             <version>${httpcore.version}</version>
         </dependency>
 
@@ -312,26 +310,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- Bundle plugin for adding OSGi info to MANIFEST -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Version>${project.version}</Bundle-Version>
-                        <Export-Package>
-                            microsoft.exchange.webservices.data*;version=${project.version}
-                        </Export-Package>
-                        <Import-Package>
-                            *
-                        </Import-Package>
-                    </instructions>
-                </configuration>
             </plugin>
             <!-- Deployment / build plugins END -->
         </plugins>
