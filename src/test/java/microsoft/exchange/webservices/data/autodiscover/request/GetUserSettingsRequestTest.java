@@ -27,10 +27,10 @@ package microsoft.exchange.webservices.data.autodiscover.request;
 import microsoft.exchange.webservices.base.BaseTest;
 import microsoft.exchange.webservices.data.autodiscover.AutodiscoverService;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.exception.ArgumentException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import org.hamcrest.core.IsNot;
 import org.hamcrest.core.IsNull;
 import org.junit.Assert;
@@ -76,7 +76,7 @@ public class GetUserSettingsRequestTest extends BaseTest {
    * Returns the Parameters which where handled to the constructor
    *
    * @return the available Services
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentException
+   * @throws ArgumentException
    */
   @Parameterized.Parameters
   public static List<Object[]> getAutodiscoverServices() throws ArgumentException {
@@ -119,11 +119,11 @@ public class GetUserSettingsRequestTest extends BaseTest {
   }
 
   /**
-   * Nothing should be writen to the Outputstream if expectPartnerToken is not set
+   * Nothing should be written to the OutputStream if expectPartnerToken is not set.
    *
    * @throws ServiceValidationException
-   * @throws XMLStreamException
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Test
   public void testWriteExtraCustomSoapHeadersToXmlWithoutPartnertoken()
@@ -137,7 +137,7 @@ public class GetUserSettingsRequestTest extends BaseTest {
     getUserSettingsRequest.writeExtraCustomSoapHeadersToXml(
         new EwsServiceXmlWriter(exchangeServiceBaseMock, byteArrayOutputStream));
 
-    // nothing should be writen to the outputstream
+    // nothing should be writyen to the outputstream
     Assert.assertArrayEquals(byteArrayOutputStream.toByteArray(), new ByteArrayOutputStream().toByteArray());
 
     // HTTP
@@ -148,16 +148,16 @@ public class GetUserSettingsRequestTest extends BaseTest {
     getUserSettingsRequest.writeExtraCustomSoapHeadersToXml(
         new EwsServiceXmlWriter(exchangeServiceBaseMock, byteArrayOutputStream));
 
-    // nothing should be writen to the outputstream
+    // nothing should be written to the outputstream
     Assert.assertArrayEquals(byteArrayOutputStream.toByteArray(), new ByteArrayOutputStream().toByteArray());
   }
 
   /**
-   * Test if content is added correctly if expectPartnerToken is set
+   * Test if content is added correctly if expectPartnerToken is set.
    *
-   * @throws microsoft.exchange.webservices.data.exception.ServiceValidationException
-   * @throws XMLStreamException
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException
+   * @throws ServiceValidationException
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Test
   public void testWriteExtraCustomSoapHeadersToXmlWithPartnertoken()
@@ -178,11 +178,11 @@ public class GetUserSettingsRequestTest extends BaseTest {
   }
 
   /**
-   * Initialising a GetUserSettingsRequest with Http should lead to an ServiceValidationException
+   * Initialising a GetUserSettingsRequest with Http should lead to an ServiceValidationException.
    *
    * @throws ServiceValidationException
-   * @throws XMLStreamException
-   * @throws ServiceXmlSerializationException
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Test(expected = ServiceValidationException.class)
   public void testWriteExtraCustomSoapHeadersToXmlWithPartnertoken2()

@@ -25,7 +25,7 @@ package microsoft.exchange.webservices.data.autodiscover;
 
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
 import java.util.ArrayList;
@@ -73,6 +73,7 @@ public final class AlternateMailboxCollection {
 
   /**
    * Gets the collection of alternate mailboxes.
+   * @return alternate mailboxes
    */
   public List<AlternateMailbox> getEntries() {
     return this.entries;

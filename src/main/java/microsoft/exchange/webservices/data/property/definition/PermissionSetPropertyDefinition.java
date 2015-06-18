@@ -26,8 +26,8 @@ package microsoft.exchange.webservices.data.property.definition;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
 import microsoft.exchange.webservices.data.core.service.folder.Folder;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.PropertyDefinitionFlags;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.property.PropertyDefinitionFlags;
 import microsoft.exchange.webservices.data.property.complex.ComplexProperty;
 import microsoft.exchange.webservices.data.property.complex.FolderPermissionCollection;
 
@@ -60,7 +60,7 @@ public class PermissionSetPropertyDefinition extends ComplexPropertyDefinitionBa
   @Override public ComplexProperty createPropertyInstance(ServiceObject owner) {
     Folder folder = (Folder) owner;
 
-    EwsUtilities.EwsAssert(folder != null, "PermissionCollectionPropertyDefinition.CreatePropertyInstance",
+    EwsUtilities.ewsAssert(folder != null, "PermissionCollectionPropertyDefinition.CreatePropertyInstance",
                            "The owner parameter is not of type Folder or a derived class.");
 
     return new FolderPermissionCollection(folder);

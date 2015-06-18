@@ -27,18 +27,14 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.schema.ServiceObjectSchema;
-import microsoft.exchange.webservices.data.enumeration.ServiceError;
-import microsoft.exchange.webservices.data.enumeration.ServiceResult;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceResponseException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.error.ServiceError;
+import microsoft.exchange.webservices.data.core.enumeration.service.ServiceResult;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.remote.ServiceResponseException;
 import microsoft.exchange.webservices.data.misc.SoapFaultDetails;
 import microsoft.exchange.webservices.data.property.definition.ExtendedPropertyDefinition;
 import microsoft.exchange.webservices.data.property.definition.IndexedPropertyDefinition;
 import microsoft.exchange.webservices.data.property.definition.PropertyDefinitionBase;
-
-import javax.xml.stream.XMLStreamException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -235,17 +231,10 @@ public class ServiceResponse {
   /**
    * Reads response elements from XML.
    *
-   * @param reader The reader.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException  the service xml deserialization exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws InstantiationException              the instantiation exception
-   * @throws IllegalAccessException              the illegal access exception
-   * @throws ServiceLocalException               the service local exception
-   * @throws Exception                           the exception
+   * @param reader the reader
+   * @throws Exception the exception
    */
-  protected void readElementsFromXml(EwsServiceXmlReader reader)
-      throws ServiceXmlDeserializationException, XMLStreamException,
-      InstantiationException, IllegalAccessException, ServiceLocalException, Exception {
+  protected void readElementsFromXml(EwsServiceXmlReader reader) throws Exception {
   }
 
   /**

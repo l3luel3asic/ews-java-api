@@ -26,10 +26,10 @@ package microsoft.exchange.webservices.data.property.complex;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.DelegateFolderPermissionLevel;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.permission.folder.DelegateFolderPermissionLevel;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -274,8 +274,9 @@ public final class DelegatePermissions extends ComplexProperty {
   /**
    * Write permission to Xml.
    *
-   * @param writer         The writer.
-   * @param xmlElementName The element name.
+   * @param writer         the writer
+   * @param xmlElementName the element name
+   * @throws XMLStreamException the XML stream exception
    */
   private void writePermissionToXml(
       EwsServiceXmlWriter writer,

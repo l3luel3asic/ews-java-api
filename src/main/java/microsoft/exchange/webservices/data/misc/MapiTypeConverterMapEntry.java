@@ -26,10 +26,11 @@ package microsoft.exchange.webservices.data.misc;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ILazyMember;
 import microsoft.exchange.webservices.data.core.LazyMember;
-import microsoft.exchange.webservices.data.exception.ArgumentException;
-import microsoft.exchange.webservices.data.exception.ArgumentNullException;
-import microsoft.exchange.webservices.data.exception.FormatException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentException;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentNullException;
+import microsoft.exchange.webservices.data.core.exception.misc.FormatException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -109,7 +110,7 @@ public class MapiTypeConverterMapEntry {
    *             this behavior.
    */
   public MapiTypeConverterMapEntry(Class<?> type) {
-    EwsUtilities.EwsAssert(defaultValueMap.getMember().containsKey(type), "MapiTypeConverterMapEntry ctor",
+    EwsUtilities.ewsAssert(defaultValueMap.getMember().containsKey(type), "MapiTypeConverterMapEntry ctor",
                            "No default value entry for type " + type.getName());
 
     this.type = type;
@@ -170,8 +171,8 @@ public class MapiTypeConverterMapEntry {
    *
    * @param stringValue String to convert to a value.
    * @return value
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException                  the service xml deserialization exception
-   * @throws microsoft.exchange.webservices.data.exception.FormatException the format exception
+   * @throws ServiceXmlDeserializationException                  the service xml deserialization exception
+   * @throws FormatException the format exception
    */
   public Object convertToValue(String stringValue)
       throws ServiceXmlDeserializationException, FormatException {
@@ -193,22 +194,21 @@ public class MapiTypeConverterMapEntry {
    *
    * @param stringValue to convert to a value.
    * @return Value.
-   * @throws microsoft.exchange.webservices.data.exception.FormatException
+   * @throws FormatException
    * @throws ServiceXmlDeserializationException
    */
-  public Object ConvertToValueOrDefault(String stringValue)
+  public Object convertToValueOrDefault(final String stringValue)
       throws ServiceXmlDeserializationException, FormatException {
-    return (stringValue == null || stringValue.isEmpty()) ?
-        this.getDefaultValue() :
-        this.convertToValue(stringValue);
+    return (StringUtils.isEmpty(stringValue))
+         ? getDefaultValue() : convertToValue(stringValue);
   }
 
   /**
    * Validates array value.
    *
    * @param value the value
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentException     the argument exception
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentNullException the argument exception
+   * @throws ArgumentException     the argument exception
+   * @throws ArgumentNullException the argument exception
    */
   private void validateValueAsArray(Object value) throws ArgumentException, ArgumentNullException {
     if (value == null) {

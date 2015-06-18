@@ -25,7 +25,7 @@ package microsoft.exchange.webservices.data.autodiscover;
 
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
 import java.util.ArrayList;
@@ -55,18 +55,16 @@ public final class ProtocolConnectionCollection {
    * @return the protocol connection collection
    * @throws Exception the exception
    */
-  public static ProtocolConnectionCollection LoadFromXml(EwsXmlReader reader)
+  public static ProtocolConnectionCollection loadFromXml(final EwsXmlReader reader)
       throws Exception {
-    ProtocolConnectionCollection value = new ProtocolConnectionCollection();
-    ProtocolConnection connection = null;
+    final ProtocolConnectionCollection value = new ProtocolConnectionCollection();
 
     do {
       reader.read();
 
       if (reader.getNodeType().getNodeType() == XmlNodeType.START_ELEMENT) {
-        if (reader.getLocalName().equals(
-            XmlElementNames.ProtocolConnection)) {
-          connection = ProtocolConnection.loadFromXml(reader);
+        if (reader.getLocalName().equals(XmlElementNames.ProtocolConnection)) {
+          final ProtocolConnection connection = ProtocolConnection.loadFromXml(reader);
           if (connection != null) {
             value.getConnections().add(connection);
           }

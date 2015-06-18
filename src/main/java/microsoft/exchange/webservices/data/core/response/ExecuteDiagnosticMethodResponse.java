@@ -27,7 +27,7 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -58,7 +58,7 @@ public final class ExecuteDiagnosticMethodResponse extends ServiceResponse {
    */
   public ExecuteDiagnosticMethodResponse(ExchangeService service) {
     super();
-    EwsUtilities.EwsAssert(service != null, "ExecuteDiagnosticMethodResponse.ctor", "service is null");
+    EwsUtilities.ewsAssert(service != null, "ExecuteDiagnosticMethodResponse.ctor", "service is null");
   }
 
   /**

@@ -28,10 +28,10 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.response.GetStreamingEventsResponse;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -53,7 +53,7 @@ public class GetStreamingEventsRequest extends HangingServiceRequestBase<GetStre
    * @param serviceObjectHandler The serviceObjectHandler
    * @param subscriptionIds      The subscriptionIds
    * @param connectionTimeout    The connectionTimeout
-   * @throws microsoft.exchange.webservices.data.exception.ServiceVersionException
+   * @throws ServiceVersionException
    */
   public GetStreamingEventsRequest(ExchangeService service, IHandleResponseObject serviceObjectHandler,
       Iterable<String> subscriptionIds, int connectionTimeout)
@@ -86,8 +86,8 @@ public class GetStreamingEventsRequest extends HangingServiceRequestBase<GetStre
   /**
    * Writes the elements to XML writer.
    *
-   * @param writer The writer
-   * @throws javax.xml.stream.XMLStreamException
+   * @param writer the writer
+   * @throws XMLStreamException the XML stream exception
    * @throws ServiceXmlSerializationException
    */
   @Override
@@ -149,5 +149,9 @@ public class GetStreamingEventsRequest extends HangingServiceRequestBase<GetStre
     GetStreamingEventsRequest.heartbeatFrequency = heartbeatFrequency;
   }
 
-
+  @Override
+	protected HttpWebRequest buildEwsHttpWebRequest() throws Exception
+	{
+		return super.buildEwsHttpPoolingWebRequest();
+	}
 }

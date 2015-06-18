@@ -25,7 +25,7 @@ package microsoft.exchange.webservices.data.core.response;
 
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.property.complex.RuleCollection;
 
 /**
@@ -38,8 +38,7 @@ public final class GetInboxRulesResponse extends ServiceResponse {
   private RuleCollection ruleCollection;
 
   /**
-   * Initializes a new instance of the
-   * <see cref="GetInboxRulesResponse"/> class.
+   * Initializes a new instance of the {@link GetInboxRulesResponse} class.
    */
   public GetInboxRulesResponse() {
     super();

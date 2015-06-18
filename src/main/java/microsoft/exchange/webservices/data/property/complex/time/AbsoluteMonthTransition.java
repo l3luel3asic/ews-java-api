@@ -27,8 +27,8 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.TimeSpan;
 
 import javax.xml.stream.XMLStreamException;
@@ -67,7 +67,7 @@ abstract class AbsoluteMonthTransition extends TimeZoneTransition {
       } else if (reader.getLocalName().equals(XmlElementNames.Month)) {
         this.month = reader.readElementValue(Integer.class);
 
-        EwsUtilities.EwsAssert(this.month > 0 && this.month <= 12,
+        EwsUtilities.ewsAssert(this.month > 0 && this.month <= 12,
             "AbsoluteMonthTransition.TryReadElementFromXml",
             "month is not in the valid 1 - 12 range.");
 
@@ -82,8 +82,8 @@ abstract class AbsoluteMonthTransition extends TimeZoneTransition {
    * Writes elements to XML.
    *
    * @param writer the writer
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
    */
   @Override
   public void writeElementsToXml(EwsServiceXmlWriter writer)

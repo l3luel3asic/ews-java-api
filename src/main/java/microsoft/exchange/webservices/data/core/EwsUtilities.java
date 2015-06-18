@@ -32,22 +32,22 @@ import microsoft.exchange.webservices.data.core.service.ICreateServiceObjectWith
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
 import microsoft.exchange.webservices.data.core.service.ServiceObjectInfo;
 import microsoft.exchange.webservices.data.core.service.item.Item;
-import microsoft.exchange.webservices.data.enumeration.EventType;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.FileAsMapping;
-import microsoft.exchange.webservices.data.enumeration.ItemTraversal;
-import microsoft.exchange.webservices.data.enumeration.MailboxType;
-import microsoft.exchange.webservices.data.enumeration.MeetingRequestsDeliveryScope;
-import microsoft.exchange.webservices.data.enumeration.RuleProperty;
-import microsoft.exchange.webservices.data.enumeration.WellKnownFolderName;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ArgumentException;
-import microsoft.exchange.webservices.data.exception.ArgumentNullException;
-import microsoft.exchange.webservices.data.exception.EWSHttpException;
-import microsoft.exchange.webservices.data.exception.FormatException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.enumeration.notification.EventType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.FileAsMapping;
+import microsoft.exchange.webservices.data.core.enumeration.search.ItemTraversal;
+import microsoft.exchange.webservices.data.core.enumeration.property.MailboxType;
+import microsoft.exchange.webservices.data.core.enumeration.service.MeetingRequestsDeliveryScope;
+import microsoft.exchange.webservices.data.core.enumeration.property.RuleProperty;
+import microsoft.exchange.webservices.data.core.enumeration.property.WellKnownFolderName;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentException;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentNullException;
+import microsoft.exchange.webservices.data.core.exception.http.EWSHttpException;
+import microsoft.exchange.webservices.data.core.exception.misc.FormatException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
 import microsoft.exchange.webservices.data.misc.TimeSpan;
 import microsoft.exchange.webservices.data.property.complex.ItemAttachment;
 import org.apache.commons.logging.Log;
@@ -60,6 +60,8 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -337,7 +339,9 @@ public final class EwsUtilities {
    * @param caller    The caller.
    * @param message   The message to use if assertion fails.
    */
-  public static void EwsAssert(boolean condition, String caller, String message) {
+  public static void ewsAssert(
+    final boolean condition, final String caller, final String message
+  ) {
     if (!condition) {
       throw new RuntimeException(String.format("[%s] %s", caller, message));
     }
@@ -509,9 +513,10 @@ public final class EwsUtilities {
   /**
    * Write trace start element.
    *
-   * @param writer         The writer to write the start element to.
-   * @param traceTag       The trace tag.
-   * @param includeVersion If true, include build version attribute.
+   * @param writer         the writer to write the start element to
+   * @param traceTag       the trace tag
+   * @param includeVersion if true, include build version attribute
+   * @throws XMLStreamException the XML stream exception
    */
   private static void writeTraceStartElement(
       XMLStreamWriter writer,
@@ -537,8 +542,8 @@ public final class EwsUtilities {
    * @param entryKind the entry kind
    * @param logEntry  the log entry
    * @return the string
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws java.io.IOException                 Signals that an I/O exception has occurred.
+   * @throws XMLStreamException the XML stream exception
+   * @throws IOException signals that an I/O exception has occurred.
    */
   public static String formatLogMessage(String entryKind, String logEntry)
       throws XMLStreamException, IOException {
@@ -570,7 +575,7 @@ public final class EwsUtilities {
    *
    * @param response the response
    * @return the string
-   * @throws microsoft.exchange.webservices.data.exception.EWSHttpException the eWS http exception
+   * @throws EWSHttpException the EWS http exception
    */
   public static String formatHttpResponseHeaders(HttpWebRequest response)
       throws EWSHttpException {
@@ -648,7 +653,7 @@ public final class EwsUtilities {
    */
   public static <T extends Enum<?>> void parseEnumValueList(Class<T> c,
       List<T> list, String value, char... separators) {
-    EwsUtilities.EwsAssert(c.isEnum(), "EwsUtilities.ParseEnumValueList", "T is not an enum type.");
+    EwsUtilities.ewsAssert(c.isEnum(), "EwsUtilities.ParseEnumValueList", "T is not an enum type.");
 
     StringBuilder regexp = new StringBuilder();
     regexp.append("[");
@@ -700,17 +705,12 @@ public final class EwsUtilities {
    * @param cls   the cls
    * @param value the value
    * @return the t
-   * @throws InstantiationException   the instantiation exception
-   * @throws IllegalAccessException   the illegal access exception
    * @throws java.text.ParseException the parse exception
    */
   @SuppressWarnings("unchecked")
-  public static <T> T parse(Class<T> cls, String value)
-      throws InstantiationException, IllegalAccessException,
-      ParseException {
+  public static <T> T parse(Class<T> cls, String value) throws ParseException {
     if (cls.isEnum()) {
-      final Map<Class<?>, Map<String, String>> member =
-        SCHEMA_TO_ENUM_DICTIONARIES.getMember();
+      final Map<Class<?>, Map<String, String>> member = SCHEMA_TO_ENUM_DICTIONARIES.getMember();
 
       String val = value;
       final Map<String, String> stringToEnumDict = member.get(cls);
@@ -726,10 +726,24 @@ public final class EwsUtilities {
         }
       }
       return null;
-    } else if (Double.class.isAssignableFrom(cls)) {
-      return (T) ((Double) Double.parseDouble(value));
-    } else if (Number.class.isAssignableFrom(cls))  {
-      return (T) ((Integer) Integer.parseInt(value));
+    }else if (Number.class.isAssignableFrom(cls)){
+      if (Double.class.isAssignableFrom(cls)){
+        return (T) ((Double) Double.parseDouble(value));
+      }else if (Integer.class.isAssignableFrom(cls)) {
+        return (T) ((Integer) Integer.parseInt(value));
+      }else if (Long.class.isAssignableFrom(cls)){
+        return (T) ((Long) Long.parseLong(value));
+      }else if (Float.class.isAssignableFrom(cls)){
+        return (T) ((Float) Float.parseFloat(value));
+      }else if (Byte.class.isAssignableFrom(cls)){
+        return (T) ((Byte) Byte.parseByte(value));
+      }else if (Short.class.isAssignableFrom(cls)){
+        return (T) ((Short) Short.parseShort(value));
+      }else if (BigInteger.class.isAssignableFrom(cls)){
+        return (T) (new BigInteger(value));
+      }else if (BigDecimal.class.isAssignableFrom(cls)){
+        return (T) (new BigDecimal(value));
+      }
     } else if (Date.class.isAssignableFrom(cls)) {
       DateFormat df = createDateFormat(XML_SCHEMA_DATE_TIME_FORMAT);
       return (T) df.parse(value);
@@ -1052,7 +1066,7 @@ public final class EwsUtilities {
    *
    * @param emailAddress The email address.
    * @return Domain name.
-   * @throws microsoft.exchange.webservices.data.exception.FormatException the format exception
+   * @throws FormatException the format exception
    */
   public static String domainFromEmailAddress(String emailAddress)
       throws FormatException {
@@ -1162,8 +1176,8 @@ public final class EwsUtilities {
    *
    * @param param     The string parameter.
    * @param paramName Name of the parameter.
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentException
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException
+   * @throws ArgumentException
+   * @throws ServiceLocalException
    */
   public static void validateNonBlankStringParamAllowNull(String param,
       String paramName) throws ArgumentException, ServiceLocalException {
@@ -1189,7 +1203,7 @@ public final class EwsUtilities {
    *
    * @param param     The string parameter.
    * @param paramName Name of the parameter.
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentNullException
+   * @throws ArgumentNullException
    * @throws ArgumentException
    * @throws ServiceLocalException
    */
@@ -1207,7 +1221,7 @@ public final class EwsUtilities {
    *
    * @param enumValue      the enum value
    * @param requestVersion the request version
-   * @throws microsoft.exchange.webservices.data.exception.ServiceVersionException the service version exception
+   * @throws ServiceVersionException the service version exception
    */
   public static void validateEnumVersionValue(Enum<?> enumValue,
       ExchangeVersion requestVersion) throws ServiceVersionException {

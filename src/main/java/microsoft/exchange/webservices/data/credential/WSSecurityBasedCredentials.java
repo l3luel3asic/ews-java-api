@@ -146,29 +146,29 @@ public abstract class WSSecurityBasedCredentials extends ExchangeCredentials {
   /**
    * Emit the extra namespace aliases used for WS-Security and WS-Addressing.
    *
-   * @param writer The writer.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @param writer the writer
+   * @throws XMLStreamException the XML stream exception
    */
   @Override public void emitExtraSoapHeaderNamespaceAliases(XMLStreamWriter writer)
       throws XMLStreamException {
     writer.writeAttribute(
         "xmlns",
+        "",
         EwsUtilities.WSSecuritySecExtNamespacePrefix,
-        null,
         EwsUtilities.WSSecuritySecExtNamespace);
     writer.writeAttribute(
         "xmlns",
+        "",
         EwsUtilities.WSAddressingNamespacePrefix,
-        null,
         EwsUtilities.WSAddressingNamespace);
   }
 
   /**
    * Serialize the WS-Security and WS-Addressing SOAP headers.
    *
-   * @param writer        The writer.
-   * @param webMethodName The Web method being called.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @param writer the writer
+   * @param webMethodName the Web method being called
+   * @throws XMLStreamException the XML stream exception
    */
   @Override public void serializeExtraSoapHeaders(XMLStreamWriter writer, String webMethodName) throws XMLStreamException {
     this.serializeWSAddressingHeaders(writer, webMethodName);
@@ -176,20 +176,19 @@ public abstract class WSSecurityBasedCredentials extends ExchangeCredentials {
   }
 
   /**
-   * Creates the WS-Addressing headers necessary to send with an outgoing
-   * request.
+   * Creates the WS-Addressing headers necessary to send with an outgoing request.
    *
-   * @param xmlWriter     The XML writer to serialize the headers to.
-   * @param webMethodName The Web method being called.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @param xmlWriter the XML writer to serialize the headers to
+   * @param webMethodName the Web method being called
+   * @throws XMLStreamException the XML stream exception
    */
   private void serializeWSAddressingHeaders(XMLStreamWriter xmlWriter,
       String webMethodName) throws XMLStreamException {
-    EwsUtilities.EwsAssert(webMethodName != null,
+    EwsUtilities.ewsAssert(webMethodName != null,
         "WSSecurityBasedCredentials.SerializeWSAddressingHeaders",
         "Web method name cannot be null!");
 
-    EwsUtilities.EwsAssert(this.ewsUrl != null,
+    EwsUtilities.ewsAssert(this.ewsUrl != null,
         "WSSecurityBasedCredentials.SerializeWSAddressingHeaders",
         "EWS Url cannot be null!");
 
@@ -203,15 +202,14 @@ public abstract class WSSecurityBasedCredentials extends ExchangeCredentials {
   }
 
   /**
-   * Creates the WS-Security header necessary to send with an outgoing
-   * request.
+   * Creates the WS-Security header necessary to send with an outgoing request.
    *
-   * @param xmlWriter The XML writer to serialize the headers to.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @param xmlWriter The XML writer to serialize the headers to
+   * @throws XMLStreamException the XML stream exception
    */
   @Override public void serializeWSSecurityHeaders(XMLStreamWriter xmlWriter)
       throws XMLStreamException {
-    EwsUtilities.EwsAssert(this.securityToken != null,
+    EwsUtilities.ewsAssert(this.securityToken != null,
         "WSSecurityBasedCredentials.SerializeWSSecurityHeaders",
         "Security token cannot be null!");
 

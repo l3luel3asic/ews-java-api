@@ -28,9 +28,9 @@ import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.PropertyBag;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.schema.AppointmentSchema;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.PropertyDefinitionFlags;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.property.PropertyDefinitionFlags;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.property.complex.MeetingTimeZone;
 import microsoft.exchange.webservices.data.property.complex.time.TimeZoneDefinition;
 
@@ -84,17 +84,14 @@ public class StartTimeZonePropertyDefinition extends TimeZonePropertyDefinition 
     Object value = propertyBag.getObjectFromPropertyDefinition(this);
 
     if (value != null) {
-      if (writer.getService().getRequestedServerVersion() == ExchangeVersion.Exchange2007_SP1) {
-        ExchangeService service = (ExchangeService) writer.getService();
-        if (service != null && !service.getExchange2007CompatibilityMode()) {
-          MeetingTimeZone meetingTimeZone = new MeetingTimeZone(
-              (TimeZoneDefinition) value);
-          meetingTimeZone.writeToXml(writer,
-              XmlElementNames.MeetingTimeZone);
+      final ExchangeService service = (ExchangeService) writer.getService();
+      if (service.getRequestedServerVersion() == ExchangeVersion.Exchange2007_SP1) {
+        if (!service.getExchange2007CompatibilityMode()) {
+          MeetingTimeZone meetingTimeZone = new MeetingTimeZone((TimeZoneDefinition) value);
+          meetingTimeZone.writeToXml(writer, XmlElementNames.MeetingTimeZone);
         }
       } else {
-        super.writePropertyValueToXml(writer, propertyBag,
-            isUpdateOperation);
+        super.writePropertyValueToXml(writer, propertyBag, isUpdateOperation);
       }
     }
   }
@@ -103,8 +100,8 @@ public class StartTimeZonePropertyDefinition extends TimeZonePropertyDefinition 
    * Writes to XML.
    *
    * @param writer the writer
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   public void writeToXml(EwsServiceXmlWriter writer)
       throws XMLStreamException, ServiceXmlSerializationException {

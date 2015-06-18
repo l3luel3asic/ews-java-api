@@ -31,12 +31,12 @@ import microsoft.exchange.webservices.data.core.LazyMember;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
+import microsoft.exchange.webservices.data.core.enumeration.service.error.ServiceErrorHandling;
 import microsoft.exchange.webservices.data.core.response.ResolveNamesResponse;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.ResolveNameSearchLocation;
-import microsoft.exchange.webservices.data.enumeration.ServiceErrorHandling;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.search.ResolveNameSearchLocation;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.FolderIdWrapperList;
 
 import java.util.HashMap;
@@ -196,11 +196,9 @@ public final class ResolveNamesRequest extends
     }
 
     EwsUtilities
-        .EwsAssert(
-            (!(searchScope == null || searchScope.isEmpty())),
-            "ResolveNameRequest.WriteAttributesToXml",
-            "The specified search location cannot " +
-                "be mapped to an EWS search scope.");
+        .ewsAssert((!(searchScope == null || searchScope.isEmpty())),
+                   "ResolveNameRequest.WriteAttributesToXml",
+                   "The specified search location cannot be mapped to an EWS search scope.");
 
     String propertySet = null;
     if (this.getContactDataPropertySet() != null) {
@@ -248,7 +246,7 @@ public final class ResolveNamesRequest extends
   }
 
   /**
-   * Gets the name to resolve. <value>The name to resolve.</value>
+   * Gets the name to resolve.
    *
    * @return the name to resolve
    */
@@ -266,9 +264,8 @@ public final class ResolveNamesRequest extends
   }
 
   /**
-   * Gets a value indicating whether to return full contact data or
-   * not. <value> <c>true</c> if should return full contact data; otherwise,
-   * <c>false</c>. </value>
+   * Gets a value indicating whether to return full contact data or not.
+   * "true" if should return full contact data; otherwise, "false".
    *
    * @return the return full contact data
    */
@@ -286,7 +283,7 @@ public final class ResolveNamesRequest extends
   }
 
   /**
-   * Gets the search location. <value>The search scope.</value>
+   * Gets the search location.
    *
    * @return the search location
    */
@@ -304,7 +301,7 @@ public final class ResolveNamesRequest extends
   }
 
   /**
-   * Gets the parent folder ids. <value>The parent folder ids.</value>
+   * Gets the parent folder ids.
    *
    * @return the parent folder ids
    */
@@ -331,7 +328,5 @@ public final class ResolveNamesRequest extends
   public PropertySet getContactDataPropertySet() {
     return this.contactDataPropertySet;
   }
-
-
 
 }

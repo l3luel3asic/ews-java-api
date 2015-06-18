@@ -25,11 +25,11 @@ package microsoft.exchange.webservices.data.core.service.schema;
 
 import microsoft.exchange.webservices.data.attribute.Schema;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.ContactSource;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.FileAsMapping;
-import microsoft.exchange.webservices.data.enumeration.PhysicalAddressIndex;
-import microsoft.exchange.webservices.data.enumeration.PropertyDefinitionFlags;
+import microsoft.exchange.webservices.data.core.enumeration.service.ContactSource;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.FileAsMapping;
+import microsoft.exchange.webservices.data.core.enumeration.property.PhysicalAddressIndex;
+import microsoft.exchange.webservices.data.core.enumeration.property.PropertyDefinitionFlags;
 import microsoft.exchange.webservices.data.property.complex.ByteArrayArray;
 import microsoft.exchange.webservices.data.property.complex.CompleteName;
 import microsoft.exchange.webservices.data.property.complex.EmailAddress;
@@ -61,7 +61,7 @@ public class ContactSchema extends ItemSchema {
   /**
    * FieldURIs for contacts.
    */
-  private static interface FieldUris {
+  private interface FieldUris {
 
     /**
      * The File as.
@@ -837,7 +837,7 @@ public class ContactSchema extends ItemSchema {
    * Defines MSExchangeCertificate Property **
    */
 
-  public static PropertyDefinition MSExchangeCertificate =
+  public static final PropertyDefinition MSExchangeCertificate =
       new ComplexPropertyDefinition<ByteArrayArray>(
           ByteArrayArray.class,
           XmlElementNames.MSExchangeCertificate,
@@ -856,7 +856,7 @@ public class ContactSchema extends ItemSchema {
    * Defines DirectoryId Property **
    */
 
-  public static PropertyDefinition DirectoryId =
+  public static final  PropertyDefinition DirectoryId =
       new StringPropertyDefinition(
           XmlElementNames.DirectoryId,
           FieldUris.DirectoryId,
@@ -867,7 +867,7 @@ public class ContactSchema extends ItemSchema {
    * Defines ManagerMailbox Property **
    */
 
-  public static PropertyDefinition ManagerMailbox =
+  public static final PropertyDefinition ManagerMailbox =
       new ContainedPropertyDefinition<EmailAddress>(
           EmailAddress.class,
           XmlElementNames.ManagerMailbox,
@@ -886,7 +886,7 @@ public class ContactSchema extends ItemSchema {
    * Defines DirectReports Property **
    */
 
-  public static PropertyDefinition DirectReports =
+  public static final PropertyDefinition DirectReports =
       new ComplexPropertyDefinition<EmailAddressCollection>(
           EmailAddressCollection.class,
           XmlElementNames.DirectReports,

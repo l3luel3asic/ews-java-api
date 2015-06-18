@@ -24,7 +24,7 @@
 package microsoft.exchange.webservices.data.misc;
 
 import microsoft.exchange.webservices.data.ISelfValidate;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
 
 /**
  * Represents a mobile phone.
@@ -83,9 +83,9 @@ public final class MobilePhone implements ISelfValidate {
 
 
   /**
-   * Validates this instance.//>!(contentType == null || contentType.isEmpty()
+   * Validates this instance.
    *
-   * @throws microsoft.exchange.webservices.data.exception.ServiceValidationException
+   * @throws ServiceValidationException on validation error
    */
   public void validate() throws ServiceValidationException {
     if (this.getPhoneNumber() == null || this.getPhoneNumber().isEmpty()) {

@@ -30,10 +30,10 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ICustomXmlUpdateSerializer;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ArgumentException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.property.definition.ExtendedPropertyDefinition;
 import microsoft.exchange.webservices.data.property.definition.PropertyDefinition;
@@ -188,7 +188,7 @@ public final class ExtendedPropertyCollection extends ComplexPropertyCollection<
    * @param propertyDefinition The property definition.
    * @param propertyValueOut   The property value.
    * @return True if property exists in collection.
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentException
+   * @throws ArgumentException
    */
   public <T> boolean tryGetValue(Class<T> cls, ExtendedPropertyDefinition propertyDefinition,
       OutParam<T> propertyValueOut) throws ArgumentException {
@@ -197,7 +197,7 @@ public final class ExtendedPropertyCollection extends ComplexPropertyCollection<
         new OutParam<ExtendedProperty>();
     if (this.tryGetProperty(propertyDefinition, extendedPropertyOut)) {
       extendedProperty = extendedPropertyOut.getParam();
-      if (cls.isAssignableFrom(propertyDefinition.getType())) {
+      if (!cls.isAssignableFrom(propertyDefinition.getType())) {
         String errorMessage = String.format(
             "Property definition type '%s' and type parameter '%s' aren't compatible.",
             propertyDefinition.getType().getSimpleName(),
@@ -259,11 +259,11 @@ public final class ExtendedPropertyCollection extends ComplexPropertyCollection<
   /**
    * Writes the deletion update to XML.
    *
-   * @param writer    The writer.
-   * @param ewsObject The ews object.
-   * @return True if property generated serialization.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer    the writer
+   * @param ewsObject the ews object
+   * @return true if property generated serialization
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   public boolean writeDeleteUpdateToXml(EwsServiceXmlWriter writer,

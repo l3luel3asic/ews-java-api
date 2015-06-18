@@ -27,14 +27,12 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.ServiceError;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.error.ServiceError;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import javax.xml.stream.XMLStreamException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,13 +136,9 @@ public class SoapFaultDetails {
    * Parses the detail node.
    *
    * @param reader the reader
-   * @throws ServiceXmlDeserializationException  the service xml deserialization exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws Exception                           the exception
+   * @throws Exception the exception
    */
-  private void parseDetailNode(EwsXmlReader reader)
-      throws ServiceXmlDeserializationException, XMLStreamException,
-      Exception, Exception {
+  private void parseDetailNode(EwsXmlReader reader) throws Exception {
     do {
       reader.read();
       if (reader.getNodeType().equals(

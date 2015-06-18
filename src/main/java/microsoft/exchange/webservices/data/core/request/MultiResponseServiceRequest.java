@@ -27,13 +27,13 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
+import microsoft.exchange.webservices.data.core.enumeration.service.error.ServiceErrorHandling;
 import microsoft.exchange.webservices.data.core.response.ServiceResponse;
 import microsoft.exchange.webservices.data.core.response.ServiceResponseCollection;
-import microsoft.exchange.webservices.data.enumeration.ServiceErrorHandling;
-import microsoft.exchange.webservices.data.enumeration.ServiceResult;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceResponseException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.enumeration.service.ServiceResult;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.remote.ServiceResponseException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
 import microsoft.exchange.webservices.data.misc.IAsyncResult;
 
 /**
@@ -158,7 +158,7 @@ public abstract class MultiResponseServiceRequest<TResponse extends ServiceRespo
     ServiceResponseCollection<TResponse> serviceResponses = internalExecute();
 
     if (this.errorHandlingMode == ServiceErrorHandling.ThrowOnError) {
-      EwsUtilities.EwsAssert(serviceResponses.getCount() == 1, "MultiResponseServiceRequest.Execute",
+      EwsUtilities.ewsAssert(serviceResponses.getCount() == 1, "MultiResponseServiceRequest.Execute",
                              "ServiceErrorHandling.ThrowOnError " + "error handling " +
                              "is only valid for singleton request");
 
@@ -173,15 +173,14 @@ public abstract class MultiResponseServiceRequest<TResponse extends ServiceRespo
    *
    * @param asyncResult The async result
    * @return Service response collection.
+   * @throws Exception on error
    */
   public ServiceResponseCollection<TResponse> endExecute(IAsyncResult asyncResult) throws Exception {
     ServiceResponseCollection<TResponse> serviceResponses = endInternalExecute(asyncResult);
 
     if (this.errorHandlingMode == ServiceErrorHandling.ThrowOnError) {
-      EwsUtilities.EwsAssert(
-          serviceResponses.getCount() == 1,
-          "MultiResponseServiceRequest.Execute",
-          "ServiceErrorHandling.ThrowOnError error handling is only valid for singleton request");
+      EwsUtilities.ewsAssert(serviceResponses.getCount() == 1, "MultiResponseServiceRequest.Execute",
+                             "ServiceErrorHandling.ThrowOnError error handling is only valid for singleton request");
 
       serviceResponses.getResponseAtIndex(0).throwIfNecessary();
     }

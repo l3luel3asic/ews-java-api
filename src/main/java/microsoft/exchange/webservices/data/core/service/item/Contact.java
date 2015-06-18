@@ -31,13 +31,13 @@ import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.schema.ContactSchema;
 import microsoft.exchange.webservices.data.core.service.schema.ServiceObjectSchema;
-import microsoft.exchange.webservices.data.enumeration.ContactSource;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.FileAsMapping;
-import microsoft.exchange.webservices.data.enumeration.PhysicalAddressIndex;
-import microsoft.exchange.webservices.data.exception.PropertyException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.enumeration.service.ContactSource;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.FileAsMapping;
+import microsoft.exchange.webservices.data.core.enumeration.property.PhysicalAddressIndex;
+import microsoft.exchange.webservices.data.core.exception.service.local.PropertyException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.property.complex.Attachment;
 import microsoft.exchange.webservices.data.property.complex.ByteArrayArray;
@@ -71,8 +71,8 @@ public class Contact extends Item {
   private final String ContactPictureName = "ContactPicture.jpg";
 
   /**
-   * Initializes an unsaved local instance of <see cref="Contact"/>. To bind
-   * to an existing contact, use Contact.Bind() instead.
+   * Initializes an unsaved local instance of {@link Contact}.
+   * To bind to an existing contact, use Contact.Bind() instead.
    *
    * @param service the service
    * @throws Exception the exception
@@ -82,7 +82,7 @@ public class Contact extends Item {
   }
 
   /**
-   * Initializes a new instance of the <see cref="Contact"/> class.
+   * Initializes a new instance of the {@link Contact} class.
    *
    * @param parentAttachment the parent attachment
    * @throws Exception the exception

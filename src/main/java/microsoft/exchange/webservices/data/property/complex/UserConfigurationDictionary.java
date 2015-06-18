@@ -29,11 +29,11 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.UserConfigurationDictionaryObjectType;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.property.UserConfigurationDictionaryObjectType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.util.DateTimeUtils;
 import org.apache.commons.codec.binary.Base64;
@@ -233,13 +233,13 @@ public final class UserConfigurationDictionary extends ComplexProperty
    * Writes elements to XML.
    *
    * @param writer accepts EwsServiceXmlWriter
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   public void writeElementsToXml(EwsServiceXmlWriter writer)
       throws XMLStreamException, ServiceXmlSerializationException {
-    EwsUtilities.EwsAssert(writer != null, "UserConfigurationDictionary.WriteElementsToXml", "writer is null");
+    EwsUtilities.ewsAssert(writer != null, "UserConfigurationDictionary.WriteElementsToXml", "writer is null");
     Iterator<Entry<Object, Object>> it = this.dictionary.entrySet()
         .iterator();
     while (it.hasNext()) {
@@ -257,28 +257,23 @@ public final class UserConfigurationDictionary extends ComplexProperty
   /**
    * Writes a dictionary object (key or value) to Xml.
    *
-   * @param writer           The writer.
-   * @param xmlElementName   The Xml element name.
-   * @param dictionaryObject The object to write.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer           the writer
+   * @param xmlElementName   the Xml element name
+   * @param dictionaryObject the object to write
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void writeObjectToXml(EwsServiceXmlWriter writer,
       String xmlElementName, Object dictionaryObject)
       throws XMLStreamException, ServiceXmlSerializationException {
-    EwsUtilities.EwsAssert(writer != null,
-        "UserConfigurationDictionary.WriteObjectToXml",
-        "writer is null");
-    EwsUtilities.EwsAssert(xmlElementName != null,
-        "UserConfigurationDictionary.WriteObjectToXml",
-        "xmlElementName is null");
+    EwsUtilities.ewsAssert(writer != null, "UserConfigurationDictionary.WriteObjectToXml", "writer is null");
+    EwsUtilities.ewsAssert(xmlElementName != null, "UserConfigurationDictionary.WriteObjectToXml",
+                           "xmlElementName is null");
     writer.writeStartElement(XmlNamespace.Types, xmlElementName);
 
     if (dictionaryObject == null) {
-      EwsUtilities.EwsAssert((!xmlElementName
-              .equals(XmlElementNames.DictionaryKey)),
-          "UserConfigurationDictionary.WriteObjectToXml",
-          "Key is null");
+      EwsUtilities.ewsAssert((!xmlElementName.equals(XmlElementNames.DictionaryKey)),
+                             "UserConfigurationDictionary.WriteObjectToXml", "Key is null");
 
       writer.writeAttributeValue(
           EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix,
@@ -299,8 +294,8 @@ public final class UserConfigurationDictionary extends ComplexProperty
    *                         an array of strings, an array of bytes (which will be encoded into base64) <br />
    *                         or a single value. Single values can be: <br />
    *                         - datetime, boolean, byte, int, long, string
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void writeObjectValueToXml(final EwsServiceXmlWriter writer,
       final Object dictionaryObject) throws XMLStreamException,
@@ -378,10 +373,10 @@ public final class UserConfigurationDictionary extends ComplexProperty
   /**
    * Writes a dictionary entry type to Xml.
    *
-   * @param writer               The writer.
-   * @param dictionaryObjectType Type to write.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer               the writer
+   * @param dictionaryObjectType type to write
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void writeEntryTypeToXml(EwsServiceXmlWriter writer,
       UserConfigurationDictionaryObjectType dictionaryObjectType)
@@ -396,10 +391,10 @@ public final class UserConfigurationDictionary extends ComplexProperty
   /**
    * Writes a dictionary entry value to Xml.
    *
-   * @param writer The writer.
-   * @param value  Value to write.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer the writer
+   * @param value  value to write
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void writeEntryValueToXml(EwsServiceXmlWriter writer, String value)
       throws XMLStreamException, ServiceXmlSerializationException {
@@ -464,8 +459,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
    * @throws Exception the exception
    */
   private void loadEntry(EwsServiceXmlReader reader) throws Exception {
-    EwsUtilities.EwsAssert(reader != null,
-        "UserConfigurationDictionary.LoadEntry", "reader is null");
+    EwsUtilities.ewsAssert(reader != null, "UserConfigurationDictionary.LoadEntry", "reader is null");
 
     Object key;
     Object value = null;
@@ -500,8 +494,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
    */
   private Object getDictionaryObject(EwsServiceXmlReader reader)
       throws Exception {
-    EwsUtilities.EwsAssert(reader != null,
-        "UserConfigurationDictionary.loadFromXml", "reader is null");
+    EwsUtilities.ewsAssert(reader != null, "UserConfigurationDictionary.loadFromXml", "reader is null");
     UserConfigurationDictionaryObjectType type = this.getObjectType(reader);
     List<String> values = this.getObjectValue(reader, type);
     return this.constructObject(type, values, reader);
@@ -518,8 +511,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
    */
   private List<String> getObjectValue(EwsServiceXmlReader reader,
       UserConfigurationDictionaryObjectType type) throws Exception {
-    EwsUtilities.EwsAssert(reader != null,
-        "UserConfigurationDictionary.LoadFromXml", "reader is null");
+    EwsUtilities.ewsAssert(reader != null, "UserConfigurationDictionary.loadFromXml", "reader is null");
 
     List<String> values = new ArrayList<String>();
 
@@ -537,12 +529,8 @@ public final class UserConfigurationDictionary extends ComplexProperty
           value = "";
         } else {
           EwsUtilities
-              .EwsAssert(
-                  false,
-                  "UserConfigurationDictionary." +
-                      "GetObjectValue",
-                  "Empty element passed for type: "
-                      + type.toString());
+              .ewsAssert(false, "UserConfigurationDictionary." + "GetObjectValue",
+                         "Empty element passed for type: " + type.toString());
 
         }
 
@@ -568,8 +556,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
    */
   private UserConfigurationDictionaryObjectType getObjectType(
       EwsServiceXmlReader reader) throws Exception {
-    EwsUtilities.EwsAssert(reader != null,
-        "UserConfigurationDictionary.LoadFromXml", "reader is null");
+    EwsUtilities.ewsAssert(reader != null, "UserConfigurationDictionary.loadFromXml", "reader is null");
 
     reader.readStartElement(this.getNamespace(), XmlElementNames.Type);
 
@@ -588,19 +575,14 @@ public final class UserConfigurationDictionary extends ComplexProperty
    */
   private Object constructObject(UserConfigurationDictionaryObjectType type,
       List<String> value, EwsServiceXmlReader reader) {
-    EwsUtilities.EwsAssert(value != null,
-        "UserConfigurationDictionary.ConstructObject", "value is null");
+    EwsUtilities.ewsAssert(value != null, "UserConfigurationDictionary.ConstructObject", "value is null");
     EwsUtilities
-        .EwsAssert(
-            (value.size() == 1 || type ==
-                UserConfigurationDictionaryObjectType.StringArray),
+        .ewsAssert((value.size() == 1 || type == UserConfigurationDictionaryObjectType.StringArray),
 
-            "UserConfigurationDictionary.ConstructObject",
-            "value is array but type is not StringArray");
+                   "UserConfigurationDictionary.ConstructObject",
+                   "value is array but type is not StringArray");
     EwsUtilities
-        .EwsAssert(reader != null,
-            "UserConfigurationDictionary.ConstructObject",
-            "reader is null");
+        .ewsAssert(reader != null, "UserConfigurationDictionary.ConstructObject", "reader is null");
 
     Object dictionaryObject = null;
     if (type.equals(UserConfigurationDictionaryObjectType.Boolean)) {
@@ -614,9 +596,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
       if (dateTime != null) {
         dictionaryObject = dateTime;
       } else {
-        EwsUtilities.EwsAssert(false,
-            "UserConfigurationDictionary.ConstructObject",
-            "DateTime is null");
+        EwsUtilities.ewsAssert(false, "UserConfigurationDictionary.ConstructObject", "DateTime is null");
       }
     } else if (type.equals(UserConfigurationDictionaryObjectType.Integer32)) {
       dictionaryObject = Integer.parseInt(value.get(0));
@@ -636,9 +616,8 @@ public final class UserConfigurationDictionary extends ComplexProperty
             UnsignedInteger64)) {
       dictionaryObject = Long.parseLong(value.get(0));
     } else {
-      EwsUtilities.EwsAssert(false,
-          "UserConfigurationDictionary.ConstructObject",
-          "Type not recognized: " + type.toString());
+      EwsUtilities.ewsAssert(false, "UserConfigurationDictionary.ConstructObject",
+                             "Type not recognized: " + type.toString());
     }
 
     return dictionaryObject;
@@ -690,7 +669,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
    * Validate the array object.
    *
    * @param dictionaryObjectAsArray Object to validate
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    */
   private void validateArrayObject(Object[] dictionaryObjectAsArray)
       throws ServiceLocalException {
@@ -724,7 +703,7 @@ public final class UserConfigurationDictionary extends ComplexProperty
    * Validates the dictionary object type.
    *
    * @param theObject Object to validate.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    */
   private void validateObjectType(Object theObject) throws ServiceLocalException {
     // This logic is based on

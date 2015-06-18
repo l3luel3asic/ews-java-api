@@ -28,7 +28,7 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.item.Contact;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.property.complex.EmailAddress;
 
 /**
@@ -57,7 +57,7 @@ public final class NameResolution {
    * @param owner the owner
    */
   protected NameResolution(NameResolutionCollection owner) {
-    EwsUtilities.EwsAssert(owner != null, "NameResolution.ctor", "owner is null.");
+    EwsUtilities.ewsAssert(owner != null, "NameResolution.ctor", "owner is null.");
 
     this.owner = owner;
   }

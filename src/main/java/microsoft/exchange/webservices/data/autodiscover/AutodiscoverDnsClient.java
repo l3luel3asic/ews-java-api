@@ -26,8 +26,8 @@ package microsoft.exchange.webservices.data.autodiscover;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.dns.DnsClient;
 import microsoft.exchange.webservices.data.dns.DnsSrvRecord;
-import microsoft.exchange.webservices.data.enumeration.TraceFlags;
-import microsoft.exchange.webservices.data.exception.DnsException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.TraceFlags;
+import microsoft.exchange.webservices.data.core.exception.dns.DnsException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -75,8 +75,8 @@ class AutodiscoverDnsClient {
    *
    * @param domain the domain
    * @return Autodiscover hostname (will be null if lookup failed).
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws java.io.IOException                 Signals that an I/O exception has occurred.
+   * @throws XMLStreamException the XML stream exception
+   * @throws IOException signals that an I/O exception has occurred.
    */
   protected String findAutodiscoverHostFromSrv(String domain)
       throws XMLStreamException, IOException {
@@ -104,9 +104,9 @@ class AutodiscoverDnsClient {
    * Finds the best matching SRV record.
    *
    * @param domain the domain
-   * @return DnsSrvRecord(will be null if lookup failed).
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws java.io.IOException                 Signals that an I/O exception has occurred.
+   * @return DnsSrvRecord (will be null if lookup failed)
+   * @throws XMLStreamException the XML stream exception
+   * @throws IOException signals that an I/O exception has occurred.
    */
   private DnsSrvRecord findBestMatchingSrvRecord(String domain)
       throws XMLStreamException, IOException {
@@ -170,7 +170,7 @@ class AutodiscoverDnsClient {
 
     // The list must contain at least one matching record since we found one
     // earlier.
-    EwsUtilities.EwsAssert(dnsSrvRecordList.size() > 0, "AutodiscoverDnsClient.FindBestMatchingSrvRecord",
+    EwsUtilities.ewsAssert(dnsSrvRecordList.size() > 0, "AutodiscoverDnsClient.FindBestMatchingSrvRecord",
                            "At least one DNS SRV record must match the criteria.");
 
     // If we have multiple records with the same priority and weight,

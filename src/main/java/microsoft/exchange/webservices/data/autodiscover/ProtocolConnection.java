@@ -25,7 +25,7 @@ package microsoft.exchange.webservices.data.autodiscover;
 
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
 /**
@@ -50,7 +50,7 @@ public final class ProtocolConnection {
   private int port;
 
   /**
-   * Initializes a new instance of the <see cref="ProtocolConnection"/> class.
+   * Initializes a new instance of the {@link ProtocolConnection} class.
    */
 
   protected ProtocolConnection() {

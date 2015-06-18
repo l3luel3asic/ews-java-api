@@ -23,34 +23,6 @@
 
 package microsoft.exchange.webservices.data.core;
 
-import microsoft.exchange.webservices.data.EWSConstants;
-import microsoft.exchange.webservices.data.core.request.HttpClientWebRequest;
-import microsoft.exchange.webservices.data.core.request.HttpWebRequest;
-import microsoft.exchange.webservices.data.credential.ExchangeCredentials;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.TraceFlags;
-import microsoft.exchange.webservices.data.exception.AccountIsLockedException;
-import microsoft.exchange.webservices.data.exception.EWSHttpException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.misc.EwsTraceListener;
-import microsoft.exchange.webservices.data.misc.ITraceListener;
-import org.apache.http.client.AuthenticationStrategy;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -69,15 +41,43 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
+import microsoft.exchange.webservices.data.EWSConstants;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.misc.TraceFlags;
+import microsoft.exchange.webservices.data.core.exception.http.EWSHttpException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.remote.AccountIsLockedException;
+import microsoft.exchange.webservices.data.core.request.HttpClientWebRequest;
+import microsoft.exchange.webservices.data.core.request.HttpWebRequest;
+import microsoft.exchange.webservices.data.credential.ExchangeCredentials;
+import microsoft.exchange.webservices.data.misc.EwsTraceListener;
+import microsoft.exchange.webservices.data.misc.ITraceListener;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.AuthenticationStrategy;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+
 /**
  * Represents an abstract binding to an Exchange Service.
  */
 public abstract class ExchangeServiceBase implements Closeable {
-
-  /**
-   * Prefix for "extended" headers.
-   */
-  private static final String ExtendedHeaderPrefix = "X-";
+  
+  private static final Log LOG = LogFactory.getLog(ExchangeService.class);
 
   /**
    * The credential.
@@ -149,7 +149,12 @@ public abstract class ExchangeServiceBase implements Closeable {
 
   protected HttpClientContext httpContext;
 
-  protected HttpClientWebRequest request = null;
+  protected CloseableHttpClient	httpPoolingClient;
+  
+  private int maximumPoolingConnections = 10;
+
+
+//  protected HttpClientWebRequest request = null;
 
   // protected static HttpStatusCode AccountIsLocked = (HttpStatusCode)456;
 
@@ -200,8 +205,37 @@ public abstract class ExchangeServiceBase implements Closeable {
       .build();
   }
 
+  private void initializeHttpPoolingClient() {
+	    Registry<ConnectionSocketFactory> registry = createConnectionSocketFactoryRegistry();
+	    PoolingHttpClientConnectionManager httpConnectionManager = new PoolingHttpClientConnectionManager(registry);
+	    httpConnectionManager.setMaxTotal(maximumPoolingConnections);
+	    httpConnectionManager.setDefaultMaxPerRoute(maximumPoolingConnections);
+	    AuthenticationStrategy authStrategy = new CookieProcessingTargetAuthenticationStrategy();
+
+	    httpPoolingClient = HttpClients.custom()
+	      .setConnectionManager(httpConnectionManager)
+	      .setTargetAuthenticationStrategy(authStrategy)
+	      .build();
+	  }
+  
+  
   /**
-   * Create registry with configured {@see ConnectionSocketFactory} instances.
+   * Sets the maximum number of connections for the pooling connection manager which is used for
+   * subscriptions.
+   * <p>
+   * Default is 10.
+   * </p>
+   * 
+   * @param maximumPoolingConnections Maximum number of pooling connections
+   */
+  public void setMaximumPoolingConnections(int maximumPoolingConnections) {
+    if (maximumPoolingConnections < 1)
+      throw new IllegalArgumentException("maximumPoolingConnections must be 1 or greater");
+    this.maximumPoolingConnections = maximumPoolingConnections;
+  }
+
+  /**
+   * Create registry with configured {@link ConnectionSocketFactory} instances.
    * Override this method to change how to work with different schemas.
    *
    * @return registry object
@@ -234,7 +268,15 @@ public abstract class ExchangeServiceBase implements Closeable {
     try {
       httpClient.close();
     } catch (IOException e) {
-      // Ignore exception while closing the HttpClient.
+      LOG.debug(e);
+    }
+
+    if (httpPoolingClient != null) {
+      try {
+        httpPoolingClient.close();
+      } catch (IOException e) {
+        LOG.debug(e);
+      }
     }
   }
 
@@ -247,7 +289,7 @@ public abstract class ExchangeServiceBase implements Closeable {
    */
   public void doOnSerializeCustomSoapHeaders(XMLStreamWriter writer) {
     EwsUtilities
-        .EwsAssert(writer != null, "ExchangeService.DoOnSerializeCustomSoapHeaders", "writer is null");
+        .ewsAssert(writer != null, "ExchangeService.DoOnSerializeCustomSoapHeaders", "writer is null");
 
     if (null != getOnSerializeCustomSoapHeaders() &&
         !getOnSerializeCustomSoapHeaders().isEmpty()) {
@@ -268,7 +310,7 @@ public abstract class ExchangeServiceBase implements Closeable {
    * @param acceptGzipEncoding If true, ask server for GZip compressed content.
    * @param allowAutoRedirect  If true, redirection response will be automatically followed.
    * @return An initialised instance of HttpWebRequest.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException       the service local exception
+   * @throws ServiceLocalException       the service local exception
    * @throws java.net.URISyntaxException the uRI syntax exception
    */
   protected HttpWebRequest prepareHttpWebRequestForUrl(URI url, boolean acceptGzipEncoding,
@@ -281,7 +323,47 @@ public abstract class ExchangeServiceBase implements Closeable {
       throw new ServiceLocalException(strErr);
     }
 
-    request = new HttpClientWebRequest(httpClient, httpContext);
+    HttpClientWebRequest request = new HttpClientWebRequest(httpClient, httpContext);
+    prepareHttpWebRequestForUrl(url, acceptGzipEncoding, allowAutoRedirect, request);
+
+    return request;
+  }
+
+  /**
+   * Creates an HttpWebRequest instance from a pooling connection manager and initialises it with
+   * the appropriate parameters, based on the configuration of this service object.
+   * <p>
+   * This is used for subscriptions.
+   * </p>
+   *
+   * @param url The URL that the HttpWebRequest should target.
+   * @param acceptGzipEncoding If true, ask server for GZip compressed content.
+   * @param allowAutoRedirect If true, redirection response will be automatically followed.
+   * @return An initialised instance of HttpWebRequest.
+   * @throws ServiceLocalException the service local exception
+   * @throws java.net.URISyntaxException the uRI syntax exception
+   */
+  protected HttpWebRequest prepareHttpPoolingWebRequestForUrl(URI url, boolean acceptGzipEncoding,
+	      boolean allowAutoRedirect) throws ServiceLocalException, URISyntaxException {
+	    // Verify that the protocol is something that we can handle
+	    String scheme = url.getScheme();
+	    if (!scheme.equalsIgnoreCase(EWSConstants.HTTP_SCHEME)
+	      && !scheme.equalsIgnoreCase(EWSConstants.HTTPS_SCHEME)) {
+	      String strErr = String.format("Protocol %s isn't supported for service request.", scheme);
+	      throw new ServiceLocalException(strErr);
+	    }
+
+	    if (httpPoolingClient == null)
+	   	 initializeHttpPoolingClient();
+	    HttpClientWebRequest request = new HttpClientWebRequest(httpPoolingClient, httpContext);
+	    prepareHttpWebRequestForUrl(url, acceptGzipEncoding, allowAutoRedirect, request);
+
+	    return request;
+	  }
+
+private void prepareHttpWebRequestForUrl(URI url, boolean acceptGzipEncoding, boolean allowAutoRedirect, HttpClientWebRequest request)
+		throws ServiceLocalException, URISyntaxException
+{
     try {
       request.setUrl(url.toURL());
     } catch (MalformedURLException e) {
@@ -303,8 +385,6 @@ public abstract class ExchangeServiceBase implements Closeable {
     request.prepareConnection();
 
     httpResponseHeaders.clear();
-
-    return request;
   }
 
   protected void prepareCredentials(HttpWebRequest request) throws ServiceLocalException, URISyntaxException {
@@ -327,11 +407,15 @@ public abstract class ExchangeServiceBase implements Closeable {
    * 500 ISE typically indicates that a SOAP fault has occurred and the handling of
    * a SOAP fault is currently service specific.
    *
-   * @throws Exception
+   * @param httpWebResponse HTTP web response
+   * @param webException web exception
+   * @param responseHeadersTraceFlag trace flag for response headers
+   * @param responseTraceFlag trace flag for respone
+   * @throws Exception on error
    */
   protected void internalProcessHttpErrorResponse(HttpWebRequest httpWebResponse, Exception webException,
       TraceFlags responseHeadersTraceFlag, TraceFlags responseTraceFlag) throws Exception {
-    EwsUtilities.EwsAssert(500 != httpWebResponse.getResponseCode(),
+    EwsUtilities.ewsAssert(500 != httpWebResponse.getResponseCode(),
         "ExchangeServiceBase.InternalProcessHttpErrorResponse",
         "InternalProcessHttpErrorResponse does not handle 500 ISE errors, the caller is supposed to handle this.");
 
@@ -354,8 +438,8 @@ public abstract class ExchangeServiceBase implements Closeable {
   }
 
   /**
-   * @return false if location is null,true if this abstract pathname is
-   * absolute,
+   * @param location file path
+   * @return false if location is null,true if this abstract pathname is absolute
    */
   public static boolean checkURIPath(String location) {
     if (location == null) {
@@ -366,7 +450,9 @@ public abstract class ExchangeServiceBase implements Closeable {
   }
 
   /**
-   * @throws Exception
+   * @param httpWebResponse HTTP web response
+   * @param webException web exception
+   * @throws Exception on error
    */
   protected abstract void processHttpErrorResponse(HttpWebRequest httpWebResponse, Exception webException)
       throws Exception;
@@ -384,10 +470,10 @@ public abstract class ExchangeServiceBase implements Closeable {
   /**
    * Logs the specified string to the TraceListener if tracing is enabled.
    *
-   * @param traceType Kind of trace entry.
-   * @param logEntry  The entry to log.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws java.io.IOException                 Signals that an I/O exception has occurred.
+   * @param traceType kind of trace entry
+   * @param logEntry the entry to log
+   * @throws XMLStreamException the XML stream exception
+   * @throws IOException signals that an I/O exception has occurred
    */
   public void traceMessage(TraceFlags traceType, String logEntry) throws XMLStreamException, IOException {
     if (this.isTraceEnabledFor(traceType)) {
@@ -416,10 +502,10 @@ public abstract class ExchangeServiceBase implements Closeable {
    *
    * @param traceType Kind of trace entry.
    * @param request   The request
-   * @throws microsoft.exchange.webservices.data.exception.EWSHttpException
-   * @throws java.net.URISyntaxException
-   * @throws java.io.IOException
-   * @throws javax.xml.stream.XMLStreamException
+   * @throws EWSHttpException EWS http exception
+   * @throws URISyntaxException URI syntax error
+   * @throws IOException signals that an I/O exception has occurred
+   * @throws XMLStreamException the XML stream exception
    */
   public void traceHttpRequestHeaders(TraceFlags traceType, HttpWebRequest request)
       throws URISyntaxException, EWSHttpException, XMLStreamException, IOException {
@@ -434,11 +520,11 @@ public abstract class ExchangeServiceBase implements Closeable {
   /**
    * Traces the HTTP response headers.
    *
-   * @param traceType Kind of trace entry.
-   * @param request   The HttpRequest object.
-   * @throws javax.xml.stream.XMLStreamException                  the xML stream exception
-   * @throws java.io.IOException                                  Signals that an I/O exception has occurred.
-   * @throws microsoft.exchange.webservices.data.exception.EWSHttpException the eWS http exception
+   * @param traceType kind of trace entry
+   * @param request the HttpRequest object
+   * @throws XMLStreamException the XML stream exception
+   * @throws IOException signals that an I/O exception has occurred
+   * @throws EWSHttpException the EWS http exception
    */
   private void traceHttpResponseHeaders(TraceFlags traceType, HttpWebRequest request)
       throws XMLStreamException, IOException, EWSHttpException {
@@ -475,66 +561,10 @@ public abstract class ExchangeServiceBase implements Closeable {
   /**
    * Validates this instance.
    *
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    */
   public void validate() throws ServiceLocalException {
-    // E14:302056 -- Allow clients to add HTTP request headers with 'X-' prefix but no others.
-    for (Map.Entry<String, String> key : this.httpHeaders.entrySet()) {
-      if (!key.getKey().startsWith(ExtendedHeaderPrefix)) {
-        throw new ServiceValidationException(String.format("HTTP header '%s' isn't permitted. Only HTTP headers with the 'X-' prefix are permitted.", key));
-      }
-    }
   }
-
-//  /**
-//   * Gets the cookie container. <value>The cookie container.</value>
-//   *
-//   * @param url   the url
-//   * @param value the value
-//   * @throws java.io.IOException         , URISyntaxException
-//   * @throws java.net.URISyntaxException the uRI syntax exception
-//   */
-//  public void setCookie(URL url, String value) throws IOException,
-//      URISyntaxException {
-//    CookieHandler handler = CookieHandler.getDefault();
-//    if (handler != null) {
-//      Map<String, List<String>> headers =
-//          new HashMap<String, List<String>>();
-//      List<String> values = new Vector<String>();
-//      values.add(value);
-//      headers.put("Cookie", values);
-//
-//      handler.put(url.toURI(), headers);
-//    }
-//  }
-//
-//  /**
-//   * Gets the cookie.
-//   *
-//   * @param url the url
-//   * @return the cookie
-//   * @throws java.io.IOException         Signals that an I/O exception has occurred.
-//   * @throws java.net.URISyntaxException the uRI syntax exception
-//   */
-//  public String getCookie(URL url) throws IOException, URISyntaxException {
-//    String cookieValue = null;
-//
-//    CookieHandler handler = CookieHandler.getDefault();
-//    if (handler != null) {
-//      Map<String, List<String>> headers = handler.get(url.toURI(),
-//          new HashMap<String, List<String>>());
-//      List<String> values = headers.get("Cookie");
-//      for (Iterator<String> iter = values.iterator(); iter.hasNext(); ) {
-//        String v = iter.next();
-//
-//        if (cookieValue == null)
-//          cookieValue = v;
-//        else
-//          cookieValue = cookieValue + ";" + v;
-//      }
-//    }
-//    return cookieValue;
-//  }
 
   /**
    * Gets a value indicating whether tracing is enabled.
@@ -822,9 +852,9 @@ public abstract class ExchangeServiceBase implements Closeable {
    *
    * @param traceType kind of trace entry
    * @param request   The request
-   * @throws microsoft.exchange.webservices.data.exception.EWSHttpException
-   * @throws java.io.IOException
-   * @throws javax.xml.stream.XMLStreamException
+   * @throws EWSHttpException EWS http exception
+   * @throws IOException signals that an I/O exception has occurred
+   * @throws XMLStreamException the XML stream exception
    */
   public void processHttpResponseHeaders(TraceFlags traceType, HttpWebRequest request)
       throws XMLStreamException, IOException, EWSHttpException {
@@ -847,6 +877,7 @@ public abstract class ExchangeServiceBase implements Closeable {
 
   /**
    * Gets a collection of HTTP headers from the last response.
+   * @return HTTP response headers
    */
   public Map<String, String> getHttpResponseHeaders() {
     return this.httpResponseHeaders;
@@ -854,6 +885,7 @@ public abstract class ExchangeServiceBase implements Closeable {
 
   /**
    * Gets the session key.
+   * @return session key
    */
   public static byte[] getSessionKey() {
     // this has to be computed only once.

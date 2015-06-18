@@ -31,15 +31,13 @@ import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.PropertyBag;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.DeleteMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendCancellationsMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.calendar.AffectedTaskOccurrence;
+import microsoft.exchange.webservices.data.core.exception.misc.InvalidOperationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
 import microsoft.exchange.webservices.data.core.service.schema.ServiceObjectSchema;
-import microsoft.exchange.webservices.data.enumeration.AffectedTaskOccurrence;
-import microsoft.exchange.webservices.data.enumeration.DeleteMode;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.SendCancellationsMode;
-import microsoft.exchange.webservices.data.exception.InvalidOperationException;
-import microsoft.exchange.webservices.data.exception.NotSupportedException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceObjectPropertyException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.property.complex.ExtendedProperty;
 import microsoft.exchange.webservices.data.property.complex.ExtendedPropertyCollection;
@@ -92,7 +90,7 @@ public abstract class ServiceObject {
    * Throws exception if this is a new service object.
    *
    * @throws InvalidOperationException the invalid operation exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException     the service local exception
+   * @throws ServiceLocalException     the service local exception
    */
   public void throwIfThisIsNew() throws InvalidOperationException,
       ServiceLocalException {
@@ -105,7 +103,7 @@ public abstract class ServiceObject {
   /**
    * Throws exception if this is not a new service object.
    *
-   * @throws microsoft.exchange.webservices.data.exception.InvalidOperationException the invalid operation exception
+   * @throws InvalidOperationException the invalid operation exception
    * @throws ServiceLocalException     the service local exception
    */
   protected void throwIfThisIsNotNew() throws InvalidOperationException,
@@ -152,7 +150,7 @@ public abstract class ServiceObject {
       }
     }
     EwsUtilities
-        .EwsAssert(!isNullOrEmpty(this.xmlElementName), "EwsObject.GetXmlElementName", String
+        .ewsAssert(!isNullOrEmpty(this.xmlElementName), "EwsObject.GetXmlElementName", String
             .format("The class %s does not have an " + "associated XML element name.",
                     this.getClass().getName()));
 
@@ -395,27 +393,15 @@ public abstract class ServiceObject {
    */
   public Object getObjectFromPropertyDefinition(
       PropertyDefinitionBase propertyDefinition) throws Exception {
-    OutParam<Object> propertyValue = new OutParam<Object>();
     PropertyDefinition propDef = (PropertyDefinition) propertyDefinition;
 
     if (propDef != null) {
       return this.getPropertyBag().getObjectFromPropertyDefinition(propDef);
     } else {
-      ExtendedPropertyDefinition extendedPropDef = (ExtendedPropertyDefinition) propertyDefinition;
-      if (extendedPropDef != null) {
-        if (this.tryGetExtendedProperty(Object.class, extendedPropDef, propertyValue)) {
-          return propertyValue;
-        } else {
-          throw new ServiceObjectPropertyException(
-              "You must load or assign this property before you can read its value.",
-              propertyDefinition);
-        }
-      } else {
-        // E14:226103 -- Other subclasses of PropertyDefinitionBase are not supported.
-        throw new NotSupportedException(String.format(
-            "This operation isn't supported for property definition type %s.",
-            propertyDefinition.getType().getName()));
-      }
+      // E14:226103 -- Other subclasses of PropertyDefinitionBase are not supported.
+      throw new UnsupportedOperationException(String.format(
+          "This operation isn't supported for property definition type %s.",
+          propertyDefinition.getType().getName()));
     }
   }
 
@@ -470,15 +456,10 @@ public abstract class ServiceObject {
     if (propDef != null) {
       return this.getPropertyBag().tryGetPropertyType(cls, propDef, propertyValue);
     } else {
-      ExtendedPropertyDefinition extPropDef = (ExtendedPropertyDefinition) propertyDefinition;
-      if (extPropDef != null) {
-        return this.tryGetExtendedProperty(cls, extPropDef, propertyValue);
-      } else {
-        // E14:226103 -- Other subclasses of PropertyDefinitionBase are not supported.
-        throw new NotSupportedException(String.format(
-            "This operation isn't supported for property definition type %s.",
-            propertyDefinition.getType().getName()));
-      }
+      // E14:226103 -- Other subclasses of PropertyDefinitionBase are not supported.
+      throw new UnsupportedOperationException(String.format(
+          "This operation isn't supported for property definition type %s.",
+          propertyDefinition.getType().getName()));
     }
   }
 
@@ -542,7 +523,7 @@ public abstract class ServiceObject {
    * Gets the id.
    *
    * @return the id
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    */
   public ServiceId getId() throws ServiceLocalException {
     PropertyDefinition idPropertyDefinition = this

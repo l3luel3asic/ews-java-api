@@ -28,10 +28,10 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.item.Item;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -196,7 +196,7 @@ public final class FileAttachment extends Attachment {
       writer.writeBase64ElementValue(this.content);
     } else {
       EwsUtilities
-          .EwsAssert(false, "FileAttachment.WriteElementsToXml", "The attachment's content is not set.");
+          .ewsAssert(false, "FileAttachment.WriteElementsToXml", "The attachment's content is not set.");
     }
 
     writer.writeEndElement();

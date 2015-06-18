@@ -30,12 +30,12 @@ import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
 import microsoft.exchange.webservices.data.core.service.item.Contact;
 import microsoft.exchange.webservices.data.core.service.schema.ContactGroupSchema;
-import microsoft.exchange.webservices.data.enumeration.EmailAddressKey;
-import microsoft.exchange.webservices.data.enumeration.MailboxType;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.property.EmailAddressKey;
+import microsoft.exchange.webservices.data.core.enumeration.property.MailboxType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.property.definition.GroupMemberPropertyDefinition;
 import microsoft.exchange.webservices.data.property.definition.PropertyDefinition;
 
@@ -113,11 +113,9 @@ public final class GroupMemberCollection extends ComplexPropertyCollection<Group
    */
   public void add(GroupMember member) throws Exception {
     EwsUtilities.validateParam(member, "member");
-    EwsUtilities.EwsAssert(member.getKey() == null,
-        "GroupMemberCollection.Add", "member.Key is not null.");
-    EwsUtilities.EwsAssert(!this.contains(member),
-        "GroupMemberCollection.Add",
-        "The member is already in the collection");
+    EwsUtilities.ewsAssert(member.getKey() == null, "GroupMemberCollection.Add", "member.Key is not null.");
+    EwsUtilities.ewsAssert(!this.contains(member), "GroupMemberCollection.Add",
+                           "The member is already in the collection");
 
     this.internalAdd(member);
   }
@@ -387,8 +385,8 @@ public final class GroupMemberCollection extends ComplexPropertyCollection<Group
    * Delete the whole members collection.
    *
    * @param writer the writer
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void writeDeleteMembersCollectionToXml(EwsServiceXmlWriter writer)
       throws XMLStreamException, ServiceXmlSerializationException {
@@ -403,8 +401,8 @@ public final class GroupMemberCollection extends ComplexPropertyCollection<Group
    *
    * @param writer  the writer
    * @param members the members
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void writeDeleteMembersToXml(EwsServiceXmlWriter writer,
       List<GroupMember> members) throws XMLStreamException,

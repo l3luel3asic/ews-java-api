@@ -27,7 +27,7 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.messaging.PhoneCallId;
 
 /**
@@ -47,7 +47,7 @@ public final class PlayOnPhoneResponse extends ServiceResponse {
    */
   public PlayOnPhoneResponse(ExchangeService service) {
     super();
-    EwsUtilities.EwsAssert(service != null, "PlayOnPhoneResponse.ctor", "service is null");
+    EwsUtilities.ewsAssert(service != null, "PlayOnPhoneResponse.ctor", "service is null");
 
     this.phoneCallId = new PhoneCallId();
   }

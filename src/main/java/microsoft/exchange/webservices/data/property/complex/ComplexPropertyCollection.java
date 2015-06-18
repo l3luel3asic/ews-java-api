@@ -29,9 +29,9 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ICustomXmlUpdateSerializer;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
 import microsoft.exchange.webservices.data.property.definition.PropertyDefinition;
 
 import java.util.ArrayList;
@@ -48,29 +48,29 @@ import java.util.List;
 public abstract class ComplexPropertyCollection
     <TComplexProperty extends ComplexProperty>
     extends ComplexProperty implements ICustomXmlUpdateSerializer,
-    Iterable<TComplexProperty>, IComplexPropertyChangedDelegate {
+    Iterable<TComplexProperty>, IComplexPropertyChangedDelegate<TComplexProperty> {
 
   /**
    * The item.
    */
-  private List<TComplexProperty> items = new ArrayList<TComplexProperty>();
+  private final List<TComplexProperty> items = new ArrayList<TComplexProperty>();
 
   /**
    * The added item.
    */
-  private List<TComplexProperty> addedItems =
+  private final List<TComplexProperty> addedItems =
       new ArrayList<TComplexProperty>();
 
   /**
    * The modified item.
    */
-  private List<TComplexProperty> modifiedItems =
+  private final List<TComplexProperty> modifiedItems =
       new ArrayList<TComplexProperty>();
 
   /**
    * The removed item.
    */
-  private List<TComplexProperty> removedItems =
+  private final List<TComplexProperty> removedItems =
       new ArrayList<TComplexProperty>();
 
   /**
@@ -101,17 +101,14 @@ public abstract class ComplexPropertyCollection
   /**
    * Item changed.
    *
-   * @param complexProperty The complex property.
+   * @param property The complex property.
    */
-  protected void itemChanged(ComplexProperty complexProperty) {
-    EwsUtilities
-        .EwsAssert(complexProperty instanceof ComplexProperty, "ComplexPropertyCollection.ItemChanged",
-                   String.format("ComplexPropertyCollection." +
-                                 "ItemChanged: the type of " +
-                                 "the complexProperty argument " +
-                                 "(%s) is not supported.", complexProperty.getClass().getName()));
+  protected void itemChanged(final TComplexProperty property) {
+    EwsUtilities.ewsAssert(
+      property != null, "ComplexPropertyCollection.ItemChanged",
+      "The complexProperty argument must be not null"
+    );
 
-    TComplexProperty property = (TComplexProperty) complexProperty;
     if (!this.addedItems.contains(property)) {
       if (!this.modifiedItems.contains(property)) {
         this.modifiedItems.add(property);
@@ -314,9 +311,8 @@ public abstract class ComplexPropertyCollection
    */
   private void internalAdd(TComplexProperty complexProperty,
       boolean loading) {
-    EwsUtilities.EwsAssert(complexProperty != null,
-        "ComplexPropertyCollection.InternalAdd",
-        "complexProperty is null");
+    EwsUtilities.ewsAssert(complexProperty != null, "ComplexPropertyCollection.InternalAdd",
+                           "complexProperty is null");
 
     if (!this.items.contains(complexProperty)) {
       this.items.add(complexProperty);
@@ -335,7 +331,7 @@ public abstract class ComplexPropertyCollection
    * @param complexProperty accepts ComplexProperty
    */
   @Override
-  public void complexPropertyChanged(ComplexProperty complexProperty) {
+  public void complexPropertyChanged(final TComplexProperty complexProperty) {
     this.itemChanged(complexProperty);
   }
 
@@ -354,9 +350,8 @@ public abstract class ComplexPropertyCollection
    * @param index The index.
    */
   protected void internalRemoveAt(int index) {
-    EwsUtilities.EwsAssert(index >= 0 && index < this.getCount(),
-        "ComplexPropertyCollection.InternalRemoveAt",
-        "index is out of range.");
+    EwsUtilities.ewsAssert(index >= 0 && index < this.getCount(),
+                           "ComplexPropertyCollection.InternalRemoveAt", "index is out of range.");
 
     this.internalRemove(this.items.get(index));
   }
@@ -369,9 +364,8 @@ public abstract class ComplexPropertyCollection
    * collection, false otherwise.
    */
   protected boolean internalRemove(TComplexProperty complexProperty) {
-    EwsUtilities.EwsAssert(complexProperty != null,
-        "ComplexPropertyCollection.InternalRemove",
-        "complexProperty is null");
+    EwsUtilities.ewsAssert(complexProperty != null, "ComplexPropertyCollection.InternalRemove",
+                           "complexProperty is null");
 
     if (this.items.remove(complexProperty)) {
       complexProperty.removeChangeEvent(this);

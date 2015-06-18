@@ -27,8 +27,8 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
 import microsoft.exchange.webservices.data.misc.id.AlternateId;
 import microsoft.exchange.webservices.data.misc.id.AlternateIdBase;
 import microsoft.exchange.webservices.data.misc.id.AlternatePublicFolderId;
@@ -88,7 +88,7 @@ public final class ConvertIdResponse extends ServiceResponse {
       this.convertedId = new AlternatePublicFolderItemId();
     } else {
       EwsUtilities
-          .EwsAssert(false, "ConvertIdResponse.ReadElementsFromXml",
+          .ewsAssert(false, "ConvertIdResponse.ReadElementsFromXml",
                      String.format("Unknown alternate Id class: %s", alternateIdClass));
     }
 

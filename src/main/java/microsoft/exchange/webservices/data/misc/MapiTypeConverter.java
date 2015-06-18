@@ -26,9 +26,9 @@ package microsoft.exchange.webservices.data.misc;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ILazyMember;
 import microsoft.exchange.webservices.data.core.LazyMember;
-import microsoft.exchange.webservices.data.enumeration.MapiPropertyType;
-import microsoft.exchange.webservices.data.exception.FormatException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.enumeration.property.MapiPropertyType;
+import microsoft.exchange.webservices.data.core.exception.misc.FormatException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -194,9 +194,8 @@ public class MapiTypeConverter {
     int index = 0;
 
     while (strings.hasNext()) {
-      Object value = typeConverter.ConvertToValueOrDefault(strings.next());
+      Object value = typeConverter.convertToValueOrDefault(strings.next());
       array.add(index, value);
-
     }
     return array;
   }
@@ -207,8 +206,8 @@ public class MapiTypeConverter {
    * @param mapiPropType the mapi prop type
    * @param stringValue  the string value
    * @return the object
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException                  the service xml deserialization exception
-   * @throws microsoft.exchange.webservices.data.exception.FormatException the format exception
+   * @throws ServiceXmlDeserializationException                  the service xml deserialization exception
+   * @throws FormatException the format exception
    */
   public static Object convertToValue(MapiPropertyType mapiPropType, String stringValue) throws ServiceXmlDeserializationException, FormatException {
     return getMapiTypeConverterMap().get(mapiPropType).convertToValue(

@@ -31,8 +31,8 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.UserSettingName;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.autodiscover.enumeration.UserSettingName;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
@@ -67,8 +67,7 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
   private Collection<UserSettingError> userSettingErrors;
 
   /**
-   * Initializes a new instance of the <see cref="GetUserSettingsResponse"/>
-   * class.
+   * Initializes a new instance of the {@link GetUserSettingsResponse} class.
    */
   public GetUserSettingsResponse() {
     super();
@@ -127,6 +126,7 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
 
   /**
    * Sets the redirectionTarget (URL or email address).
+   * @param value redirect target value
    */
   public void setRedirectTarget(String value) {
     this.redirectTarget = value;
@@ -142,7 +142,8 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
   }
 
   /**
-   * sets the requested settings for the user.
+   * Sets the requested settings for the user.
+   * @param settings settings map
    */
   public void setSettings(Map<UserSettingName, Object> settings) {
     this.settings = settings;
@@ -158,7 +159,8 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
   }
 
   /**
-   * sets the requested settings for the user.
+   * Sets the requested settings for the user.
+   * @param value user setting errors
    */
   protected void setUserSettingErrors(Collection<UserSettingError> value) {
     this.userSettingErrors = value;
@@ -223,8 +225,8 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
           } else if (settingClass.equals(XmlElementNames.ProtocolConnectionCollectionSetting)) {
             this.readSettingFromXml(reader);
           } else {
-            EwsUtilities.EwsAssert(false, "GetUserSettingsResponse." + "LoadUserSettingsFromXml", String
-                                       .format("%s,%s", "Invalid setting class '%s' returned", settingClass));
+            EwsUtilities.ewsAssert(false, "GetUserSettingsResponse." + "LoadUserSettingsFromXml", String
+                .format("%s,%s", "Invalid setting class '%s' returned", settingClass));
             break;
           }
         }
@@ -259,7 +261,7 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
           value = WebClientUrlCollection.loadFromXml(reader);
         } else if (reader.getLocalName().equals(
             XmlElementNames.ProtocolConnections)) {
-          value = ProtocolConnectionCollection.LoadFromXml(reader);
+          value = ProtocolConnectionCollection.loadFromXml(reader);
         } else if (reader.getLocalName().equals(
             XmlElementNames.AlternateMailboxes)) {
           value = AlternateMailboxCollection.loadFromXml(reader);
@@ -268,9 +270,8 @@ public final class GetUserSettingsResponse extends AutodiscoverResponse {
     } while (!reader.isEndElement(XmlNamespace.Autodiscover,
         XmlElementNames.UserSetting));
 
-    EwsUtilities.EwsAssert(name != null,
-        "GetUserSettingsResponse.ReadSettingFromXml",
-        "Missing name element in user setting");
+    EwsUtilities.ewsAssert(name != null, "GetUserSettingsResponse.ReadSettingFromXml",
+                           "Missing name element in user setting");
 
     this.getSettings().put(name, value);
   }

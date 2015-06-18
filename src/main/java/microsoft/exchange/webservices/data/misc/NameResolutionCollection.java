@@ -28,8 +28,8 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ArgumentOutOfRangeException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentOutOfRangeException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,7 +62,7 @@ public final class NameResolutionCollection implements
    * @param service the service
    */
   public NameResolutionCollection(ExchangeService service) {
-    EwsUtilities.EwsAssert(service != null, "NameResolutionSet.ctor", "service is null.");
+    EwsUtilities.ewsAssert(service != null, "NameResolutionSet.ctor", "service is null.");
     this.service = service;
   }
 

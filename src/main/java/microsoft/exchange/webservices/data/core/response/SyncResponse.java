@@ -29,10 +29,10 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
-import microsoft.exchange.webservices.data.enumeration.ChangeType;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.enumeration.sync.ChangeType;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
 import microsoft.exchange.webservices.data.sync.Change;
 import microsoft.exchange.webservices.data.sync.ChangeCollection;
 import microsoft.exchange.webservices.data.sync.ItemChange;
@@ -65,7 +65,7 @@ public abstract class SyncResponse<TServiceObject extends ServiceObject,
   protected SyncResponse(PropertySet propertySet) {
     super();
     this.propertySet = propertySet;
-    EwsUtilities.EwsAssert(this.propertySet != null, "SyncResponse.ctor", "PropertySet should not be null");
+    EwsUtilities.ewsAssert(this.propertySet != null, "SyncResponse.ctor", "PropertySet should not be null");
   }
 
   /**
@@ -141,12 +141,8 @@ public abstract class SyncResponse<TServiceObject extends ServiceObject,
                   itemChange = (ItemChange) change;
                 }
                 EwsUtilities
-                    .EwsAssert(
-                        itemChange != null,
-                        "SyncResponse." +
-                            "ReadElementsFromXml",
-                        "ReadFlagChange is only " +
-                            "valid on ItemChange");
+                    .ewsAssert(itemChange != null, "SyncResponse." + "ReadElementsFromXml",
+                               "ReadFlagChange is only " + "valid on ItemChange");
 
                 itemChange.setIsRead(reader.readElementValue(
                     Boolean.class, XmlNamespace.Types,

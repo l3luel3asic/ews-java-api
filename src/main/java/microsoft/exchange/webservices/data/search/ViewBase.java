@@ -28,12 +28,12 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.request.ServiceRequestBase;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.ServiceObjectType;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.service.ServiceObjectType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -59,7 +59,7 @@ public abstract class ViewBase {
    *
    * @param request The request using this view.
    * @throws ServiceValidationException the service validation exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceVersionException    the service version exception
+   * @throws ServiceVersionException    the service version exception
    */
   public void internalValidate(ServiceRequestBase request)
       throws ServiceValidationException, ServiceVersionException {
@@ -91,10 +91,10 @@ public abstract class ViewBase {
   /**
    * Writes the search settings to XML.
    *
-   * @param writer  The Writer
-   * @param groupBy The group by clause.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer  the writer
+   * @param groupBy the group by clause
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   protected abstract void internalWriteSearchSettingsToXml(
       EwsServiceXmlWriter writer, Grouping groupBy)
@@ -103,9 +103,9 @@ public abstract class ViewBase {
   /**
    * Writes OrderBy property to XML.
    *
-   * @param writer The Writer
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer the writer
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   public abstract void writeOrderByToXml(EwsServiceXmlWriter writer)
       throws XMLStreamException, ServiceXmlSerializationException;
@@ -137,7 +137,7 @@ public abstract class ViewBase {
    * Writes the attribute to XML.
    *
    * @param writer The writer.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException the service xml serialization exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   public abstract void writeAttributesToXml(EwsServiceXmlWriter writer)
       throws ServiceXmlSerializationException;

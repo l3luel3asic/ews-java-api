@@ -26,13 +26,13 @@ package microsoft.exchange.webservices.data.core;
 import microsoft.exchange.webservices.data.ISelfValidate;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
 import microsoft.exchange.webservices.data.core.service.item.Item;
-import microsoft.exchange.webservices.data.enumeration.BasePropertySet;
-import microsoft.exchange.webservices.data.enumeration.PropertyDefinitionFlags;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ArgumentException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceObjectPropertyException;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.enumeration.property.BasePropertySet;
+import microsoft.exchange.webservices.data.core.enumeration.property.PropertyDefinitionFlags;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceObjectPropertyException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.property.complex.ComplexProperty;
 import microsoft.exchange.webservices.data.property.complex.IComplexPropertyChanged;
@@ -115,7 +115,7 @@ public class PropertyBag implements IComplexPropertyChanged, IComplexPropertyCha
    * @param owner The owner of the bag.
    */
   public PropertyBag(ServiceObject owner) {
-    EwsUtilities.EwsAssert(owner != null, "PropertyBag.ctor", "owner is null");
+    EwsUtilities.ewsAssert(owner != null, "PropertyBag.ctor", "owner is null");
 
     this.owner = owner;
   }
@@ -242,11 +242,11 @@ public class PropertyBag implements IComplexPropertyChanged, IComplexPropertyCha
   /**
    * Tries to get a property value based on a property definition.
    *
-   * @param <T>                The types of the property.
-   * @param propertyDefinition The property definition.
-   * @param propertyValue      The property value.
-   * @return True if property was retrieved.
-   * @throws microsoft.exchange.webservices.data.exception.ArgumentException
+   * @param <T>                the types of the property
+   * @param propertyDefinition the property definition
+   * @param propertyValue      the property value
+   * @return true if property was retrieved
+   * @throws ArgumentException on validation error
    */
   public <T> boolean tryGetPropertyType(Class<T> cls, PropertyDefinition propertyDefinition,
       OutParam<T> propertyValue) throws ArgumentException {
@@ -303,8 +303,7 @@ public class PropertyBag implements IComplexPropertyChanged, IComplexPropertyCha
       if (propertyDefinition
           .hasFlag(PropertyDefinitionFlags.AutoInstantiateOnRead)) {
         EwsUtilities
-            .EwsAssert(
-                propertyDefinition instanceof ComplexPropertyDefinitionBase,
+            .ewsAssert(propertyDefinition instanceof ComplexPropertyDefinitionBase,
                 "PropertyBag.get_this[]",
                 "propertyDefinition is " +
                     "marked with AutoInstantiateOnRead " +
@@ -380,9 +379,9 @@ public class PropertyBag implements IComplexPropertyChanged, IComplexPropertyCha
   /**
    * Tries to retrieve the value of the specified property.
    *
-   * @param propertyDefinition    The property for which to retrieve a value.
-   * @param propertyValueOutParam If the method succeeds, contains the value of the property.
-   * @return True if the value could be retrieved, false otherwise.
+   * @param propertyDefinition the property for which to retrieve a value
+   * @param propertyValueOutParam if the method succeeds, contains the value of the property
+   * @return true if the value could be retrieved, false otherwise
    */
   public <T> boolean tryGetValue(PropertyDefinition propertyDefinition, OutParam<T> propertyValueOutParam) {
     if (this.properties.containsKey(propertyDefinition)) {

@@ -29,8 +29,8 @@ import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.item.Item;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
 import microsoft.exchange.webservices.data.search.FindItemsResults;
 import microsoft.exchange.webservices.data.search.GroupedFindItemsResults;
 import microsoft.exchange.webservices.data.search.ItemGroup;
@@ -81,7 +81,7 @@ public final class FindItemResponse
     this.propertySet = propertySet;
 
     EwsUtilities
-        .EwsAssert(this.propertySet != null, "FindItemResponse.ctor", "PropertySet should not be null");
+        .ewsAssert(this.propertySet != null, "FindItemResponse.ctor", "PropertySet should not be null");
   }
 
   /**
@@ -155,20 +155,19 @@ public final class FindItemResponse
   /**
    * Read item from XML.
    *
-   * @param reader          The reader
-   * @param propertySet     The property set
-   * @param destinationList The list in which to add the read item.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException  the service xml deserialization exception
-   * @throws Exception                           the exception
+   * @param reader the reader
+   * @param propertySet the property set
+   * @param destinationList the list in which to add the read item
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlDeserializationException the service xml deserialization exception
+   * @throws Exception the exception
    */
   private void internalReadItemsFromXml(EwsServiceXmlReader reader,
       PropertySet propertySet, List<TItem> destinationList)
       throws XMLStreamException, ServiceXmlDeserializationException,
       Exception {
-    EwsUtilities.EwsAssert(destinationList != null,
-        "FindItemResponse.InternalReadItemsFromXml",
-        "destinationList is null.");
+    EwsUtilities.ewsAssert(destinationList != null, "FindItemResponse.InternalReadItemsFromXml",
+                           "destinationList is null.");
 
     reader.readStartElement(XmlNamespace.Types, XmlElementNames.Items);
     if (!reader.isEmptyElement()) {

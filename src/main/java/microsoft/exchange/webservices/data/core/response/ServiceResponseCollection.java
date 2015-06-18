@@ -24,7 +24,7 @@
 package microsoft.exchange.webservices.data.core.response;
 
 import microsoft.exchange.webservices.data.core.EwsUtilities;
-import microsoft.exchange.webservices.data.enumeration.ServiceResult;
+import microsoft.exchange.webservices.data.core.enumeration.service.ServiceResult;
 
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -61,8 +61,7 @@ public final class ServiceResponseCollection<TResponse extends ServiceResponse>
    * @param response The response.
    */
   public void add(TResponse response) {
-
-    EwsUtilities.EwsAssert(response != null, "EwsResponseList.Add", "response is null");
+    EwsUtilities.ewsAssert(response != null, "EwsResponseList.Add", "response is null");
     if (response.getResult().ordinal() > this.overallResult.ordinal()) {
       this.overallResult = response.getResult();
     }

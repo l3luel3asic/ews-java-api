@@ -25,8 +25,8 @@ package microsoft.exchange.webservices.data.misc;
 
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
 import microsoft.exchange.webservices.data.property.complex.FolderId;
 
 /**
@@ -45,7 +45,7 @@ public class FolderIdWrapper extends AbstractFolderIdWrapper {
    * @param folderId the folder id
    */
   public FolderIdWrapper(FolderId folderId) {
-    EwsUtilities.EwsAssert(folderId != null, "FolderIdWrapper.ctor", "folderId is null");
+    EwsUtilities.ewsAssert(folderId != null, "FolderIdWrapper.ctor", "folderId is null");
     this.folderId = folderId;
   }
 
@@ -64,7 +64,7 @@ public class FolderIdWrapper extends AbstractFolderIdWrapper {
    * Validates folderId against specified version.
    *
    * @param version the version
-   * @throws microsoft.exchange.webservices.data.exception.ServiceVersionException the service version exception
+   * @throws ServiceVersionException the service version exception
    */
   protected void validate(ExchangeVersion version)
       throws ServiceVersionException {

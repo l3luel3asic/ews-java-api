@@ -27,8 +27,8 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -52,7 +52,7 @@ public final class OofReply {
    *
    * @param writer         the writer
    * @param xmlElementName the xml element name
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @throws XMLStreamException the XML stream exception
    */
   public static void writeEmptyReplyToXml(EwsServiceXmlWriter writer, String xmlElementName) throws XMLStreamException {
     writer.writeStartElement(XmlNamespace.Types, xmlElementName);
@@ -124,8 +124,8 @@ public final class OofReply {
    *
    * @param writer         the writer
    * @param xmlElementName the xml element name
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   public void writeToXml(EwsServiceXmlWriter writer, String xmlElementName)
       throws XMLStreamException, ServiceXmlSerializationException {

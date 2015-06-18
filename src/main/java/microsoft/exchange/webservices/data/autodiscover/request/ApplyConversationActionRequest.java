@@ -29,9 +29,9 @@ import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.request.MultiResponseServiceRequest;
 import microsoft.exchange.webservices.data.core.response.ServiceResponse;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.ServiceErrorHandling;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.error.ServiceErrorHandling;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.misc.ConversationAction;
 
 import java.util.ArrayList;
@@ -52,9 +52,9 @@ public final class ApplyConversationActionRequest extends MultiResponseServiceRe
   /**
    * Initializes a new instance of the ApplyConversationActionRequest class
    *
-   * @param service           The service.
-   * @param errorHandlingMode Indicates how errors should be handled.
-   * @throws Exception
+   * @param service           The service
+   * @param errorHandlingMode Indicates how errors should be handled
+   * @throws Exception on error
    */
   public ApplyConversationActionRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode) throws Exception {
     super(service, errorHandlingMode);
@@ -86,13 +86,15 @@ public final class ApplyConversationActionRequest extends MultiResponseServiceRe
   /**
    * Validate request.
    *
-   * @throws Exception
+   * @throws Exception on validation error
    */
   @Override
   protected void validate() throws Exception {
     super.validate();
-    EwsUtilities.validateParamCollection(this.
-                                             conversationActions.iterator(), "conversationActions");
+    EwsUtilities.validateParamCollection(
+      conversationActions.iterator(), "conversationActions"
+    );
+
     for (int iAction = 0; iAction < this.getConversationActions().size(); iAction++) {
       this.getConversationActions().get(iAction).validate();
     }
@@ -103,11 +105,10 @@ public final class ApplyConversationActionRequest extends MultiResponseServiceRe
    * Writes XML elements.
    *
    * @param writer The writer.
-   * @throws Exception
+   * @throws Exception on validation error
    */
   @Override
-  protected void writeElementsToXml(EwsServiceXmlWriter writer)
-      throws Exception {
+  protected void writeElementsToXml(EwsServiceXmlWriter writer) throws Exception {
     writer.writeStartElement(
         XmlNamespace.Messages,
         XmlElementNames.ConversationActions);

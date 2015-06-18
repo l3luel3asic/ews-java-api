@@ -30,12 +30,11 @@ import microsoft.exchange.webservices.data.autodiscover.response.GetDomainSettin
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.DomainSettingName;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.autodiscover.enumeration.DomainSettingName;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -67,8 +66,7 @@ public class GetDomainSettingsRequest extends AutodiscoverRequest {
   private ExchangeVersion requestedVersion;
 
   /**
-   * Initializes a new instance of the <see cref="GetDomainSettingsRequest"/>
-   * class.
+   * Initializes a new instance of the {@link GetDomainSettingsRequest} class.
    *
    * @param service the service
    * @param url     the url
@@ -108,11 +106,9 @@ public class GetDomainSettingsRequest extends AutodiscoverRequest {
    * Executes this instance.
    *
    * @return the gets the domain settings response collection
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
-   * @throws Exception                                                 the exception
+   * @throws Exception the exception
    */
-  public GetDomainSettingsResponseCollection execute()
-      throws ServiceLocalException, Exception {
+  public GetDomainSettingsResponseCollection execute() throws Exception {
     GetDomainSettingsResponseCollection responses =
         (GetDomainSettingsResponseCollection) this
             .internalExecute();
@@ -181,7 +177,7 @@ public class GetDomainSettingsRequest extends AutodiscoverRequest {
    * Writes the attribute to XML.
    *
    * @param writer The writer.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException the service xml serialization exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   protected void writeAttributesToXml(EwsServiceXmlWriter writer)
@@ -194,9 +190,9 @@ public class GetDomainSettingsRequest extends AutodiscoverRequest {
   /**
    * Writes request to XML.
    *
-   * @param writer The writer.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @param writer the writer
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   protected void writeElementsToXml(EwsServiceXmlWriter writer)

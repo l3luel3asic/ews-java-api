@@ -27,10 +27,10 @@ import microsoft.exchange.webservices.data.ISelfValidate;
 import microsoft.exchange.webservices.data.attribute.EditorBrowsable;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
 import java.util.ArrayList;
@@ -372,20 +372,18 @@ public abstract class ComplexProperty implements ISelfValidate, ComplexFunctionD
   /**
    * Implements ISelfValidate.validate. Validates this instance.
    *
-   * @throws microsoft.exchange.webservices.data.exception.ServiceValidationException the service validation exception
-   * @throws Exception                  the exception
+   * @throws Exception the exception
    */
-  public void validate() throws ServiceValidationException, Exception {
+  public void validate() throws Exception {
     this.internalValidate();
   }
 
   /**
    * Validates this instance.
    *
-   * @throws microsoft.exchange.webservices.data.exception.ServiceValidationException the service validation exception
-   * @throws Exception
+   * @throws Exception the exception
    */
-  protected void internalValidate() throws ServiceValidationException, Exception {
+  protected void internalValidate() throws Exception {
   }
 
   public Boolean func(EwsServiceXmlReader reader) throws Exception {

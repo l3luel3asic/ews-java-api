@@ -28,8 +28,8 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.DomainSettingName;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.autodiscover.enumeration.DomainSettingName;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,8 +67,7 @@ public final class GetDomainSettingsResponse extends AutodiscoverResponse {
   private Collection<DomainSettingError> domainSettingErrors;
 
   /**
-   * Initializes a new instance of the <see cref="GetDomainSettingsResponse"/>
-   * class.
+   * Initializes a new instance of the {@link GetDomainSettingsResponse} class.
    */
   public GetDomainSettingsResponse() {
     super();
@@ -182,7 +181,7 @@ public final class GetDomainSettingsResponse extends AutodiscoverResponse {
             this.readSettingFromXml(reader);
           } else {
             EwsUtilities
-                .EwsAssert(false, "GetDomainSettingsResponse." + "LoadDomainSettingsFromXml",
+                .ewsAssert(false, "GetDomainSettingsResponse." + "LoadDomainSettingsFromXml",
                            String.format("%s,%s", "Invalid setting " + "class '%s' returned", settingClass));
             break;
           }
@@ -218,9 +217,8 @@ public final class GetDomainSettingsResponse extends AutodiscoverResponse {
     } while (!reader.isEndElement(XmlNamespace.Autodiscover,
         XmlElementNames.DomainSetting));
 
-    EwsUtilities.EwsAssert(name != null,
-        "GetDomainSettingsResponse.ReadSettingFromXml",
-        "Missing name element in domain setting");
+    EwsUtilities.ewsAssert(name != null, "GetDomainSettingsResponse.ReadSettingFromXml",
+                           "Missing name element in domain setting");
 
     this.settings.put(name, value);
   }

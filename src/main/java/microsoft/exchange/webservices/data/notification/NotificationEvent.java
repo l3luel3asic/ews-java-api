@@ -24,12 +24,9 @@
 package microsoft.exchange.webservices.data.notification;
 
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
-import microsoft.exchange.webservices.data.enumeration.EventType;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.enumeration.notification.EventType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.property.complex.FolderId;
-
-import javax.xml.stream.XMLStreamException;
 
 import java.util.Date;
 
@@ -76,15 +73,9 @@ public abstract class NotificationEvent {
    * Load from XML.
    *
    * @param reader the reader
-   * @throws ServiceXmlDeserializationException  the service xml deserialization exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws InstantiationException              the instantiation exception
-   * @throws IllegalAccessException              the illegal access exception
-   * @throws Exception                           the exception
+   * @throws Exception the exception
    */
-  protected void internalLoadFromXml(EwsServiceXmlReader reader)
-      throws ServiceXmlDeserializationException, XMLStreamException,
-      InstantiationException, IllegalAccessException, Exception {
+  protected void internalLoadFromXml(EwsServiceXmlReader reader) throws Exception {
   }
 
   /**

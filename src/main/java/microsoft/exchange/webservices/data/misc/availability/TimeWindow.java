@@ -27,8 +27,8 @@ import microsoft.exchange.webservices.data.ISelfValidate;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -130,8 +130,8 @@ public class TimeWindow implements ISelfValidate {
    * @param xmlElementName the xml element name
    * @param startTime      the start time
    * @param endTime        the end time
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private static void writeToXml(EwsServiceXmlWriter writer,
       String xmlElementName, Object startTime, Object endTime)
@@ -152,8 +152,8 @@ public class TimeWindow implements ISelfValidate {
    *
    * @param writer         the writer
    * @param xmlElementName the xml element name
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   protected void writeToXmlUnscopedDatesOnly(EwsServiceXmlWriter writer,
       String xmlElementName) throws XMLStreamException, ServiceXmlSerializationException {
@@ -171,13 +171,12 @@ public class TimeWindow implements ISelfValidate {
    *
    * @param writer         the writer
    * @param xmlElementName the xml element name
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   public void writeToXml(EwsServiceXmlWriter writer, String xmlElementName)
       throws XMLStreamException, ServiceXmlSerializationException {
-    TimeWindow.writeToXml(writer, xmlElementName, this.startTime,
-        this.endTime);
+    TimeWindow.writeToXml(writer, xmlElementName, startTime, endTime);
   }
 
   /**
@@ -193,10 +192,5 @@ public class TimeWindow implements ISelfValidate {
    * Validates this instance.
    */
   public void validate() {
-                /*
-		 * if (this.startTime >= this.endTime) { throw new
-		 * ArgumentException(Strings
-		 * .TimeWindowStartTimeMustBeGreaterThanEndTime); }
-		 */
   }
 }

@@ -34,15 +34,15 @@ import microsoft.exchange.webservices.data.core.service.ServiceObject;
 import microsoft.exchange.webservices.data.core.service.item.Item;
 import microsoft.exchange.webservices.data.core.service.schema.FolderSchema;
 import microsoft.exchange.webservices.data.core.service.schema.ServiceObjectSchema;
-import microsoft.exchange.webservices.data.enumeration.AffectedTaskOccurrence;
-import microsoft.exchange.webservices.data.enumeration.DeleteMode;
-import microsoft.exchange.webservices.data.enumeration.EffectiveRights;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.SendCancellationsMode;
-import microsoft.exchange.webservices.data.enumeration.ServiceErrorHandling;
-import microsoft.exchange.webservices.data.enumeration.WellKnownFolderName;
-import microsoft.exchange.webservices.data.exception.InvalidOperationException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.enumeration.service.calendar.AffectedTaskOccurrence;
+import microsoft.exchange.webservices.data.core.enumeration.service.DeleteMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.EffectiveRights;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendCancellationsMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.error.ServiceErrorHandling;
+import microsoft.exchange.webservices.data.core.enumeration.property.WellKnownFolderName;
+import microsoft.exchange.webservices.data.core.exception.misc.InvalidOperationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
 import microsoft.exchange.webservices.data.property.complex.ExtendedPropertyCollection;
 import microsoft.exchange.webservices.data.property.complex.FolderId;
 import microsoft.exchange.webservices.data.property.complex.FolderPermissionCollection;
@@ -72,9 +72,9 @@ public class Folder extends ServiceObject {
   private static final Log LOG = LogFactory.getLog(Folder.class);
 
   /**
-   * Initializes an unsaved local instance of <see cref="Folder"/>.
+   * Initializes an unsaved local instance of {@link Folder}.
    *
-   * @param service EWS service to which this object belongs.
+   * @param service EWS service to which this object belongs
    * @throws Exception the exception
    */
   public Folder(ExchangeService service) throws Exception {
@@ -746,7 +746,7 @@ public class Folder extends ServiceObject {
    * user has on the folder.
    *
    * @return the effective rights
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    */
   public EnumSet<EffectiveRights> getEffectiveRights() throws ServiceLocalException {
     return getPropertyBag().getObjectFromPropertyDefinition(

@@ -27,7 +27,7 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.item.Conversation;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public final class FindConversationResponse extends ServiceResponse {
   @Override
   protected void readElementsFromXml(EwsServiceXmlReader reader)
       throws Exception {
-    EwsUtilities.EwsAssert(conversations != null, "FindConversationResponse.ReadElementsFromXml",
+    EwsUtilities.ewsAssert(conversations != null, "FindConversationResponse.ReadElementsFromXml",
                            "conversations is null.");
 
     reader.readStartElement(XmlNamespace.Messages,

@@ -26,11 +26,11 @@ package microsoft.exchange.webservices.data.core.service.schema;
 import microsoft.exchange.webservices.data.attribute.Schema;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.item.Appointment;
-import microsoft.exchange.webservices.data.enumeration.AppointmentType;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.LegacyFreeBusyStatus;
-import microsoft.exchange.webservices.data.enumeration.MeetingResponseType;
-import microsoft.exchange.webservices.data.enumeration.PropertyDefinitionFlags;
+import microsoft.exchange.webservices.data.core.enumeration.service.calendar.AppointmentType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.property.LegacyFreeBusyStatus;
+import microsoft.exchange.webservices.data.core.enumeration.property.MeetingResponseType;
+import microsoft.exchange.webservices.data.core.enumeration.property.PropertyDefinitionFlags;
 import microsoft.exchange.webservices.data.property.complex.AttendeeCollection;
 import microsoft.exchange.webservices.data.property.complex.DeletedOccurrenceInfoCollection;
 import microsoft.exchange.webservices.data.property.complex.EmailAddress;
@@ -831,9 +831,10 @@ public class AppointmentSchema extends ItemSchema {
 
   /**
    * Registers property.
-   * <p/>
+   * <p>
    * IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the
    * same order as they are defined in types.xsd)
+   * </p>
    */
   @Override
   protected void registerProperties() {

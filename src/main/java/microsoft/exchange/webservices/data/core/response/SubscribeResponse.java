@@ -25,11 +25,7 @@ package microsoft.exchange.webservices.data.core.response;
 
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
 import microsoft.exchange.webservices.data.notification.SubscriptionBase;
-
-import javax.xml.stream.XMLStreamException;
 
 /**
  * Represents the base response class to subscription creation operations.
@@ -51,25 +47,18 @@ public final class SubscribeResponse<TSubscription extends SubscriptionBase> ext
    */
   public SubscribeResponse(TSubscription subscription) {
     super();
-    EwsUtilities.EwsAssert(subscription != null, "SubscribeResponse.ctor", "subscription is null");
+    EwsUtilities.ewsAssert(subscription != null, "SubscribeResponse.ctor", "subscription is null");
     this.subscription = subscription;
   }
 
   /**
    * Reads response elements from XML.
    *
-   * @param reader The reader.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException  the service xml deserialization exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws InstantiationException              the instantiation exception
-   * @throws IllegalAccessException              the illegal access exception
-   * @throws ServiceLocalException               the service local exception
-   * @throws Exception                           the exception
+   * @param reader the reader
+   * @throws Exception the exception
    */
   @Override
-  protected void readElementsFromXml(EwsServiceXmlReader reader)
-      throws ServiceXmlDeserializationException, XMLStreamException,
-      InstantiationException, IllegalAccessException, ServiceLocalException, Exception {
+  protected void readElementsFromXml(EwsServiceXmlReader reader) throws Exception {
     super.readElementsFromXml(reader);
     this.subscription.loadFromXml(reader);
   }

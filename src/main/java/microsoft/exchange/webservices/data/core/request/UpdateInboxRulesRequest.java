@@ -29,11 +29,10 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.response.UpdateInboxRulesResponse;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.ServiceResult;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.UpdateInboxRulesException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.ServiceResult;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.remote.UpdateInboxRulesException;
 import microsoft.exchange.webservices.data.property.complex.RuleOperation;
 
 /**
@@ -161,11 +160,9 @@ public final class UpdateInboxRulesRequest extends SimpleServiceRequestBase<Upda
    * Executes this request.
    *
    * @return Service response.
-   * @throws Exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException
+   * @throws Exception on error
    */
-  public UpdateInboxRulesResponse execute()
-      throws ServiceLocalException, Exception {
+  public UpdateInboxRulesResponse execute() throws Exception {
     UpdateInboxRulesResponse serviceResponse = internalExecute();
     if (serviceResponse.getResult() == ServiceResult.Error) {
       throw new UpdateInboxRulesException(serviceResponse,

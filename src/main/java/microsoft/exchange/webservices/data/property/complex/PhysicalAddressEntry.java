@@ -31,9 +31,9 @@ import microsoft.exchange.webservices.data.core.SimplePropertyBag;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.ServiceObject;
-import microsoft.exchange.webservices.data.enumeration.PhysicalAddressKey;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.property.PhysicalAddressKey;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -206,8 +206,8 @@ public final class PhysicalAddressEntry extends DictionaryEntryProperty<Physical
    * Writes elements to XML.
    *
    * @param writer the writer
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   public void writeElementsToXml(EwsServiceXmlWriter writer)
@@ -225,9 +225,9 @@ public final class PhysicalAddressEntry extends DictionaryEntryProperty<Physical
    * @param writer                        the writer
    * @param ewsObject                     the ews object
    * @param ownerDictionaryXmlElementName the owner dictionary xml element name
-   * @return True if update XML was written.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @return true if update XML was written
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   protected boolean writeSetUpdateToXml(EwsServiceXmlWriter writer,
@@ -283,9 +283,9 @@ public final class PhysicalAddressEntry extends DictionaryEntryProperty<Physical
    *
    * @param writer    the writer
    * @param ewsObject the ews object
-   * @return True if update XML was written.
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+   * @return true if update XML was written
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   protected boolean writeDeleteUpdateToXml(EwsServiceXmlWriter writer,
@@ -314,8 +314,8 @@ public final class PhysicalAddressEntry extends DictionaryEntryProperty<Physical
    * @param writer              the writer
    * @param ewsObject           the ews object
    * @param fieldXmlElementName the field xml element name
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   private void internalWriteDeleteFieldToXml(EwsServiceXmlWriter writer,
       ServiceObject ewsObject, String fieldXmlElementName)

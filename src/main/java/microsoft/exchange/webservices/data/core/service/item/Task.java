@@ -30,16 +30,16 @@ import microsoft.exchange.webservices.data.core.PropertySet;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.service.schema.ServiceObjectSchema;
 import microsoft.exchange.webservices.data.core.service.schema.TaskSchema;
-import microsoft.exchange.webservices.data.enumeration.AffectedTaskOccurrence;
-import microsoft.exchange.webservices.data.enumeration.ConflictResolutionMode;
-import microsoft.exchange.webservices.data.enumeration.DeleteMode;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.MessageDisposition;
-import microsoft.exchange.webservices.data.enumeration.TaskDelegationState;
-import microsoft.exchange.webservices.data.enumeration.TaskMode;
-import microsoft.exchange.webservices.data.enumeration.TaskStatus;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceResponseException;
+import microsoft.exchange.webservices.data.core.enumeration.service.calendar.AffectedTaskOccurrence;
+import microsoft.exchange.webservices.data.core.enumeration.service.ConflictResolutionMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.DeleteMode;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.MessageDisposition;
+import microsoft.exchange.webservices.data.core.enumeration.property.TaskDelegationState;
+import microsoft.exchange.webservices.data.core.enumeration.service.TaskMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.TaskStatus;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.remote.ServiceResponseException;
 import microsoft.exchange.webservices.data.property.complex.ItemAttachment;
 import microsoft.exchange.webservices.data.property.complex.ItemId;
 import microsoft.exchange.webservices.data.property.complex.StringList;
@@ -169,7 +169,7 @@ public class Task extends Item {
    * object representing the current occurrence if the task is
    * recurring and the uypdate changed its recurrence pattern; or null
    * in every other case.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceResponseException the service response exception
+   * @throws ServiceResponseException the service response exception
    * @throws Exception                the exception
    */
   public Task updateTask(ConflictResolutionMode conflictResolutionMode)

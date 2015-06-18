@@ -35,13 +35,13 @@ import microsoft.exchange.webservices.data.core.service.schema.ItemSchema;
 import microsoft.exchange.webservices.data.core.service.schema.PostReplySchema;
 import microsoft.exchange.webservices.data.core.service.schema.ResponseObjectSchema;
 import microsoft.exchange.webservices.data.core.service.schema.ServiceObjectSchema;
-import microsoft.exchange.webservices.data.enumeration.AffectedTaskOccurrence;
-import microsoft.exchange.webservices.data.enumeration.DeleteMode;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.MessageDisposition;
-import microsoft.exchange.webservices.data.enumeration.SendCancellationsMode;
-import microsoft.exchange.webservices.data.enumeration.WellKnownFolderName;
-import microsoft.exchange.webservices.data.exception.InvalidOperationException;
+import microsoft.exchange.webservices.data.core.enumeration.service.calendar.AffectedTaskOccurrence;
+import microsoft.exchange.webservices.data.core.enumeration.service.DeleteMode;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.service.MessageDisposition;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendCancellationsMode;
+import microsoft.exchange.webservices.data.core.enumeration.property.WellKnownFolderName;
+import microsoft.exchange.webservices.data.core.exception.misc.InvalidOperationException;
 import microsoft.exchange.webservices.data.property.complex.FolderId;
 import microsoft.exchange.webservices.data.property.complex.ItemId;
 import microsoft.exchange.webservices.data.property.complex.MessageBody;
@@ -67,7 +67,6 @@ public final class PostReply extends ServiceObject {
    */
   public PostReply(Item referenceItem) throws Exception {
     super(referenceItem.getService());
-    EwsUtilities.EwsAssert(referenceItem != null, "PostReply.ctor", "referenceItem is null");
     referenceItem.throwIfThisIsNew();
 
     this.referenceItem = referenceItem;
@@ -116,9 +115,8 @@ public final class PostReply extends ServiceObject {
 
     // This should never happen. If it does, we have a bug.
     EwsUtilities
-        .EwsAssert(postItem != null, "PostReply.InternalCreate",
-            "postItem is null. The CreateItem call did" +
-                " not return the expected PostItem.");
+        .ewsAssert(postItem != null, "PostReply.InternalCreate",
+                   "postItem is null. The CreateItem call did" + " not return the expected PostItem.");
 
     return postItem;
   }

@@ -28,12 +28,12 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.request.ServiceRequestBase;
-import microsoft.exchange.webservices.data.enumeration.ItemTraversal;
-import microsoft.exchange.webservices.data.enumeration.OffsetBasePoint;
-import microsoft.exchange.webservices.data.enumeration.ServiceObjectType;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceVersionException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.search.ItemTraversal;
+import microsoft.exchange.webservices.data.core.enumeration.search.OffsetBasePoint;
+import microsoft.exchange.webservices.data.core.enumeration.service.ServiceObjectType;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -77,7 +77,7 @@ public final class ItemView extends PagedView {
    *
    * @param request the request
    * @throws ServiceVersionException    the service version exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceValidationException the service validation exception
+   * @throws ServiceValidationException the service validation exception
    */
   @Override public void internalValidate(ServiceRequestBase request)
       throws ServiceVersionException, ServiceValidationException {
@@ -90,7 +90,7 @@ public final class ItemView extends PagedView {
    * Writes the attribute to XML.
    *
    * @param writer the writer
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException the service xml serialization exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override public void writeAttributesToXml(EwsServiceXmlWriter writer)
       throws ServiceXmlSerializationException {
@@ -102,8 +102,8 @@ public final class ItemView extends PagedView {
    *
    * @param writer  the writer
    * @param groupBy the group by
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override
   protected void internalWriteSearchSettingsToXml(EwsServiceXmlWriter writer,
@@ -116,8 +116,8 @@ public final class ItemView extends PagedView {
    * Writes OrderBy property to XML.
    *
    * @param writer the writer
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   @Override public void writeOrderByToXml(EwsServiceXmlWriter writer)
       throws XMLStreamException, ServiceXmlSerializationException {

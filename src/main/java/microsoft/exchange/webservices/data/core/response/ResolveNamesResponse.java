@@ -26,8 +26,8 @@ package microsoft.exchange.webservices.data.core.response;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
-import microsoft.exchange.webservices.data.enumeration.ServiceError;
-import microsoft.exchange.webservices.data.exception.ServiceResponseException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.error.ServiceError;
+import microsoft.exchange.webservices.data.core.exception.service.remote.ServiceResponseException;
 import microsoft.exchange.webservices.data.misc.NameResolutionCollection;
 
 /**
@@ -47,7 +47,7 @@ public final class ResolveNamesResponse extends ServiceResponse {
    */
   public ResolveNamesResponse(ExchangeService service) {
     super();
-    EwsUtilities.EwsAssert(service != null, "ResolveNamesResponse.ctor", "service is null");
+    EwsUtilities.ewsAssert(service != null, "ResolveNamesResponse.ctor", "service is null");
 
     this.resolutions = new NameResolutionCollection(service);
   }

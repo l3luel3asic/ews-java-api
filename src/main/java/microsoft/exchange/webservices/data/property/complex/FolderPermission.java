@@ -29,13 +29,13 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ILazyMember;
 import microsoft.exchange.webservices.data.core.LazyMember;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.FolderPermissionLevel;
-import microsoft.exchange.webservices.data.enumeration.FolderPermissionReadAccess;
-import microsoft.exchange.webservices.data.enumeration.PermissionScope;
-import microsoft.exchange.webservices.data.enumeration.StandardUser;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.enumeration.permission.folder.FolderPermissionLevel;
+import microsoft.exchange.webservices.data.core.enumeration.permission.folder.FolderPermissionReadAccess;
+import microsoft.exchange.webservices.data.core.enumeration.permission.PermissionScope;
+import microsoft.exchange.webservices.data.core.enumeration.property.StandardUser;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -429,7 +429,7 @@ public final class FolderPermission extends ComplexProperty implements IComplexP
    *
    * @param isCalendarFolder the is calendar folder
    * @param permissionIndex  the permission index
-   * @throws microsoft.exchange.webservices.data.exception.ServiceValidationException the service validation exception
+   * @throws ServiceValidationException the service validation exception
    * @throws ServiceLocalException      the service local exception
    */
   void validate(boolean isCalendarFolder, int permissionIndex)
@@ -707,7 +707,7 @@ public final class FolderPermission extends ComplexProperty implements IComplexP
    * Sets the permission level.
    *
    * @param value the new permission level
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    */
   public void setPermissionLevel(FolderPermissionLevel value)
       throws ServiceLocalException {

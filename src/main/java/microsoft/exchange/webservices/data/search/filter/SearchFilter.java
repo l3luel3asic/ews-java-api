@@ -28,14 +28,14 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.ComparisonMode;
-import microsoft.exchange.webservices.data.enumeration.ContainmentMode;
-import microsoft.exchange.webservices.data.enumeration.EditorBrowsableState;
-import microsoft.exchange.webservices.data.enumeration.LogicalOperator;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlDeserializationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.search.ComparisonMode;
+import microsoft.exchange.webservices.data.core.enumeration.search.ContainmentMode;
+import microsoft.exchange.webservices.data.core.enumeration.attribute.EditorBrowsableState;
+import microsoft.exchange.webservices.data.core.enumeration.search.LogicalOperator;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlDeserializationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.OutParam;
 import microsoft.exchange.webservices.data.property.complex.ComplexProperty;
 import microsoft.exchange.webservices.data.property.complex.IComplexPropertyChangedDelegate;
@@ -283,7 +283,7 @@ public abstract class SearchFilter extends ComplexProperty {
      * Writes the attribute to XML.
      *
      * @param writer the writer
-     * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException the service xml serialization exception
+     * @throws ServiceXmlSerializationException the service xml serialization exception
      */
     @Override
     public void writeAttributesToXml(EwsServiceXmlWriter writer)
@@ -300,8 +300,8 @@ public abstract class SearchFilter extends ComplexProperty {
      * Writes the elements to Xml.
      *
      * @param writer the writer
-     * @throws javax.xml.stream.XMLStreamException the xML stream exception
-     * @throws ServiceXmlSerializationException    the service xml serialization exception
+     * @throws XMLStreamException the XML stream exception
+     * @throws ServiceXmlSerializationException the service xml serialization exception
      */
     @Override
     public void writeElementsToXml(EwsServiceXmlWriter writer)
@@ -993,8 +993,8 @@ public abstract class SearchFilter extends ComplexProperty {
      * Writes the elements to XML.
      *
      * @param writer the writer
-     * @throws javax.xml.stream.XMLStreamException the xML stream exception
-     * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException    the service xml serialization exception
+     * @throws XMLStreamException the XML stream exception
+     * @throws ServiceXmlSerializationException the service xml serialization exception
      */
     @Override
     public void writeElementsToXml(EwsServiceXmlWriter writer)
@@ -1085,17 +1085,6 @@ public abstract class SearchFilter extends ComplexProperty {
       if (this.otherPropertyDefinition == null && this.value == null) {
         throw new ServiceValidationException(
             "Either the OtherPropertyDefinition or the Value property must be set.");
-      } else if (value != null) {
-        // All objects implement Object.
-        // Value types that don't implement Object must implement
-        // ISearchStringProvider
-        // in order to be used in a search filter.
-        if (!((value instanceof Object) || (value instanceof ISearchStringProvider))) {
-          throw new ServiceValidationException(
-              String
-                  .format("Values of type '%s' cannot be as comparison values in search filter.",
-                      value.getClass().getName()));
-        }
       }
     }
 

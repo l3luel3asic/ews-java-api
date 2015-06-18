@@ -26,7 +26,7 @@ package microsoft.exchange.webservices.data.autodiscover.exception.error;
 import microsoft.exchange.webservices.data.autodiscover.enumeration.AutodiscoverErrorCode;
 import microsoft.exchange.webservices.data.core.EwsXmlReader;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
 
 /**
@@ -50,9 +50,8 @@ public final class DomainSettingError {
   private String settingName;
 
   /**
-   * Initializes a new instance of the <see cref="DomainSettingError"/> class.
+   * Initializes a new instance of the {@link DomainSettingError} class.
    */
-
   public DomainSettingError() {
   }
 

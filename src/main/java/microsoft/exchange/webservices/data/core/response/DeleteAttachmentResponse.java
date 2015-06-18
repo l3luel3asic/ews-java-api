@@ -27,8 +27,8 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
 import microsoft.exchange.webservices.data.property.complex.Attachment;
 
 /**
@@ -48,7 +48,7 @@ public final class DeleteAttachmentResponse extends ServiceResponse {
    */
   public DeleteAttachmentResponse(Attachment attachment) {
     super();
-    EwsUtilities.EwsAssert(attachment != null, "DeleteAttachmentResponse.ctor", "attachment is null");
+    EwsUtilities.ewsAssert(attachment != null, "DeleteAttachmentResponse.ctor", "attachment is null");
 
     this.attachment = attachment;
   }
@@ -57,7 +57,7 @@ public final class DeleteAttachmentResponse extends ServiceResponse {
    * Reads response elements from XML.
    *
    * @param reader the reader
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException the service local exception
+   * @throws ServiceLocalException the service local exception
    * @throws Exception                                                 the exception
    */
   @Override

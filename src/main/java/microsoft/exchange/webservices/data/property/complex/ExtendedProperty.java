@@ -27,10 +27,11 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlReader;
 import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.MapiTypeConverter;
 import microsoft.exchange.webservices.data.property.definition.ExtendedPropertyDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -86,16 +87,14 @@ public final class ExtendedProperty extends ComplexProperty {
       this.propertyDefinition.loadFromXml(reader);
       return true;
     } else if (reader.getLocalName().equals(XmlElementNames.Value)) {
-      EwsUtilities.EwsAssert(this.getPropertyDefinition() != null,
-          "ExtendedProperty.TryReadElementFromXml",
-          "PropertyDefintion is missing");
+      EwsUtilities.ewsAssert(this.getPropertyDefinition() != null, "ExtendedProperty.TryReadElementFromXml",
+                             "PropertyDefintion is missing");
       String stringValue = reader.readElementValue();
       this.value = MapiTypeConverter.convertToValue(this.getPropertyDefinition().getMapiType(), stringValue);
       return true;
     } else if (reader.getLocalName().equals(XmlElementNames.Values)) {
-      EwsUtilities.EwsAssert(this.getPropertyDefinition() != null,
-          "ExtendedProperty.TryReadElementFromXml",
-          "PropertyDefintion is missing");
+      EwsUtilities.ewsAssert(this.getPropertyDefinition() != null, "ExtendedProperty.TryReadElementFromXml",
+                             "PropertyDefintion is missing");
 
       StringList stringList = new StringList(XmlElementNames.Value);
       stringList.loadFromXml(reader, reader.getLocalName());
@@ -112,8 +111,8 @@ public final class ExtendedProperty extends ComplexProperty {
    * Writes elements to XML.
    *
    * @param writer the writer
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
    */
   @Override
   public void writeElementsToXml(EwsServiceXmlWriter writer)
@@ -215,19 +214,13 @@ public final class ExtendedProperty extends ComplexProperty {
    * @return boolean
    */
   @Override
-  public boolean equals(Object obj) {
-
+  public boolean equals(final Object obj) {
     if (obj instanceof ExtendedProperty) {
-      ExtendedProperty other = (ExtendedProperty) obj;
-      if (other.getPropertyDefinition().equals(
-          this.getPropertyDefinition())) {
-        return this.getStringValue().equals(other.getStringValue());
-      } else {
-        return false;
-      }
-    } else {
-      return false;
+      final ExtendedProperty other = (ExtendedProperty) obj;
+      return other.getPropertyDefinition().equals(this.getPropertyDefinition())
+        && StringUtils.equals(this.getStringValue(), other.getStringValue());
     }
+    return false;
   }
 
   /**

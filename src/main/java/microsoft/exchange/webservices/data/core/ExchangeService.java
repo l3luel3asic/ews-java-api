@@ -23,11 +23,52 @@
 
 package microsoft.exchange.webservices.data.core;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import microsoft.exchange.webservices.data.autodiscover.AutodiscoverService;
 import microsoft.exchange.webservices.data.autodiscover.IAutodiscoverRedirectionUrl;
+import microsoft.exchange.webservices.data.autodiscover.enumeration.UserSettingName;
 import microsoft.exchange.webservices.data.autodiscover.exception.AutodiscoverLocalException;
 import microsoft.exchange.webservices.data.autodiscover.request.ApplyConversationActionRequest;
 import microsoft.exchange.webservices.data.autodiscover.response.GetUserSettingsResponse;
+import microsoft.exchange.webservices.data.core.enumeration.availability.AvailabilityData;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ConversationActionType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.DateTimePrecision;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.misc.IdFormat;
+import microsoft.exchange.webservices.data.core.enumeration.misc.TraceFlags;
+import microsoft.exchange.webservices.data.core.enumeration.misc.UserConfigurationProperties;
+import microsoft.exchange.webservices.data.core.enumeration.notification.EventType;
+import microsoft.exchange.webservices.data.core.enumeration.property.BodyType;
+import microsoft.exchange.webservices.data.core.enumeration.property.WellKnownFolderName;
+import microsoft.exchange.webservices.data.core.enumeration.search.ResolveNameSearchLocation;
+import microsoft.exchange.webservices.data.core.enumeration.service.ConflictResolutionMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.DeleteMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.MeetingRequestsDeliveryScope;
+import microsoft.exchange.webservices.data.core.enumeration.service.MessageDisposition;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendCancellationsMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendInvitationsMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.SendInvitationsOrCancellationsMode;
+import microsoft.exchange.webservices.data.core.enumeration.service.SyncFolderItemsScope;
+import microsoft.exchange.webservices.data.core.enumeration.service.calendar.AffectedTaskOccurrence;
+import microsoft.exchange.webservices.data.core.enumeration.service.error.ServiceErrorHandling;
+import microsoft.exchange.webservices.data.core.exception.misc.ArgumentOutOfRangeException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.remote.AccountIsLockedException;
+import microsoft.exchange.webservices.data.core.exception.service.remote.ServiceRemoteException;
+import microsoft.exchange.webservices.data.core.exception.service.remote.ServiceResponseException;
 import microsoft.exchange.webservices.data.core.request.AddDelegateRequest;
 import microsoft.exchange.webservices.data.core.request.ConvertIdRequest;
 import microsoft.exchange.webservices.data.core.request.CopyFolderRequest;
@@ -101,34 +142,6 @@ import microsoft.exchange.webservices.data.core.service.folder.Folder;
 import microsoft.exchange.webservices.data.core.service.item.Appointment;
 import microsoft.exchange.webservices.data.core.service.item.Conversation;
 import microsoft.exchange.webservices.data.core.service.item.Item;
-import microsoft.exchange.webservices.data.enumeration.AffectedTaskOccurrence;
-import microsoft.exchange.webservices.data.enumeration.AvailabilityData;
-import microsoft.exchange.webservices.data.enumeration.BodyType;
-import microsoft.exchange.webservices.data.enumeration.ConflictResolutionMode;
-import microsoft.exchange.webservices.data.enumeration.ConversationActionType;
-import microsoft.exchange.webservices.data.enumeration.DateTimePrecision;
-import microsoft.exchange.webservices.data.enumeration.DeleteMode;
-import microsoft.exchange.webservices.data.enumeration.EventType;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.IdFormat;
-import microsoft.exchange.webservices.data.enumeration.MeetingRequestsDeliveryScope;
-import microsoft.exchange.webservices.data.enumeration.MessageDisposition;
-import microsoft.exchange.webservices.data.enumeration.ResolveNameSearchLocation;
-import microsoft.exchange.webservices.data.enumeration.SendCancellationsMode;
-import microsoft.exchange.webservices.data.enumeration.SendInvitationsMode;
-import microsoft.exchange.webservices.data.enumeration.SendInvitationsOrCancellationsMode;
-import microsoft.exchange.webservices.data.enumeration.ServiceErrorHandling;
-import microsoft.exchange.webservices.data.enumeration.SyncFolderItemsScope;
-import microsoft.exchange.webservices.data.enumeration.TraceFlags;
-import microsoft.exchange.webservices.data.enumeration.UserConfigurationProperties;
-import microsoft.exchange.webservices.data.enumeration.UserSettingName;
-import microsoft.exchange.webservices.data.enumeration.WellKnownFolderName;
-import microsoft.exchange.webservices.data.exception.AccountIsLockedException;
-import microsoft.exchange.webservices.data.exception.ArgumentOutOfRangeException;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceRemoteException;
-import microsoft.exchange.webservices.data.exception.ServiceResponseException;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
 import microsoft.exchange.webservices.data.messaging.UnifiedMessaging;
 import microsoft.exchange.webservices.data.misc.AsyncCallback;
 import microsoft.exchange.webservices.data.misc.AsyncRequestResult;
@@ -178,23 +191,11 @@ import microsoft.exchange.webservices.data.search.filter.SearchFilter;
 import microsoft.exchange.webservices.data.sync.ChangeCollection;
 import microsoft.exchange.webservices.data.sync.FolderChange;
 import microsoft.exchange.webservices.data.sync.ItemChange;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Represents a binding to the Exchange Web Services.
@@ -551,8 +552,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    *
    * @param folderId         The folder id
    * @param deleteMode       The delete mode
-   * @param deleteSubFolders if set to <c>true</c> empty folder should also delete sub
-   *                         folder.
+   * @param deleteSubFolders if set to "true" empty folder should also delete sub folder.
    * @throws Exception the exception
    */
   public void emptyFolder(FolderId folderId, DeleteMode deleteMode, boolean deleteSubFolders) throws Exception {
@@ -650,8 +650,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       SendInvitationsMode sendInvitationsMode) throws Exception {
     ArrayList<Item> items = new ArrayList<Item>();
     items.add(item);
-    internalCreateItems(items, parentFolderId, messageDisposition,
-        sendInvitationsMode, ServiceErrorHandling.ThrowOnError);
+    internalCreateItems(items, parentFolderId, messageDisposition, sendInvitationsMode,
+                        ServiceErrorHandling.ThrowOnError);
   }
 
   /**
@@ -731,10 +731,9 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
           "This operation can't be performed because attachments have been added or deleted for one or more item.");
     }
 
-    return this.internalUpdateItems(items, savedItemsDestinationFolderId,
-        conflictResolution, messageDisposition,
-        sendInvitationsOrCancellationsMode,
-        ServiceErrorHandling.ReturnErrors);
+    return this.internalUpdateItems(items, savedItemsDestinationFolderId, conflictResolution,
+                                    messageDisposition, sendInvitationsOrCancellationsMode,
+                                    ServiceErrorHandling.ReturnErrors);
   }
 
   /**
@@ -835,16 +834,15 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    *                            not.
    * @return A ServiceResponseCollection providing copy results for each of
    * the specified item Ids.
-   * @throws Exception
+   * @throws Exception on error
    */
   public ServiceResponseCollection<MoveCopyItemResponse> copyItems(
       Iterable<ItemId> itemIds, FolderId destinationFolderId,
       boolean returnNewItemIds) throws Exception {
-    EwsUtilities.validateMethodVersion(this,
-        ExchangeVersion.Exchange2010_SP1, "CopyItems");
+    EwsUtilities.validateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "CopyItems");
 
-    return this.internalCopyItems(itemIds, destinationFolderId,
-        returnNewItemIds, ServiceErrorHandling.ReturnErrors);
+    return this.internalCopyItems(itemIds, destinationFolderId, returnNewItemIds,
+                                  ServiceErrorHandling.ReturnErrors);
   }
 
   /**
@@ -916,16 +914,15 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    *                            not.
    * @return A ServiceResponseCollection providing copy results for each of
    * the specified item Ids.
-   * @throws Exception
+   * @throws Exception on error
    */
   public ServiceResponseCollection<MoveCopyItemResponse> moveItems(
       Iterable<ItemId> itemIds, FolderId destinationFolderId,
       boolean returnNewItemIds) throws Exception {
-    EwsUtilities.validateMethodVersion(this,
-        ExchangeVersion.Exchange2010_SP1, "MoveItems");
+    EwsUtilities.validateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "MoveItems");
 
-    return this.internalMoveItems(itemIds, destinationFolderId,
-        returnNewItemIds, ServiceErrorHandling.ReturnErrors);
+    return this.internalMoveItems(itemIds, destinationFolderId, returnNewItemIds,
+                                  ServiceErrorHandling.ReturnErrors);
   }
 
   /**
@@ -1100,8 +1097,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   public FindItemsResults<Item> findItems(
       WellKnownFolderName parentFolderName, ItemView view)
       throws Exception {
-    return this.findItems(new FolderId(parentFolderName),
-        (SearchFilter) null, view);
+    return this.findItems(new FolderId(parentFolderName), (SearchFilter) null, view);
   }
 
   /**
@@ -1242,8 +1238,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   public GroupedFindItemsResults<Item> findItems(
       WellKnownFolderName parentFolderName, SearchFilter searchFilter,
       ItemView view, Grouping groupBy) throws Exception {
-    return this.findItems(new FolderId(parentFolderName), searchFilter,
-        view, groupBy);
+    return this.findItems(new FolderId(parentFolderName), searchFilter, view, groupBy);
   }
 
   /**
@@ -1283,8 +1278,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   public FindItemsResults<Appointment> findAppointments(
       WellKnownFolderName parentFolderName, CalendarView calendarView)
       throws Exception {
-    return this.findAppointments(new FolderId(parentFolderName),
-        calendarView);
+    return this.findAppointments(new FolderId(parentFolderName), calendarView);
   }
 
   /**
@@ -1301,8 +1295,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     EwsUtilities.validateParamCollection(items.iterator(), "item");
     EwsUtilities.validateParam(propertySet, "propertySet");
 
-    return this.internalLoadPropertiesForItems(items, propertySet,
-        ServiceErrorHandling.ReturnErrors);
+    return this.internalLoadPropertiesForItems(items, propertySet, ServiceErrorHandling.ReturnErrors);
   }
 
   /**
@@ -1360,8 +1353,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     EwsUtilities.validateParamCollection(itemIds.iterator(), "itemIds");
     EwsUtilities.validateParam(propertySet, "propertySet");
 
-    return this.internalBindToItems(itemIds, propertySet,
-        ServiceErrorHandling.ReturnErrors);
+    return this.internalBindToItems(itemIds, propertySet, ServiceErrorHandling.ReturnErrors);
   }
 
   /**
@@ -1380,8 +1372,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     List<ItemId> itmLst = new ArrayList<ItemId>();
     itmLst.add(itemId);
     ServiceResponseCollection<GetItemResponse> responses = this
-        .internalBindToItems(itmLst, propertySet,
-            ServiceErrorHandling.ThrowOnError);
+        .internalBindToItems(itmLst, propertySet, ServiceErrorHandling.ThrowOnError);
 
     return responses.getResponseAtIndex(0).getItem();
   }
@@ -1514,8 +1505,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    * @param attachments          the attachments
    * @param bodyType             the body type
    * @param additionalProperties the additional property
-   * @return Service response collection.
-   * @throws Exception
+   * @return service response collection
+   * @throws Exception on error
    */
   protected ServiceResponseCollection<GetAttachmentResponse> getAttachments(
       Attachment[] attachments, BodyType bodyType,
@@ -1540,8 +1531,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     List<Attachment> attachmentArray = new ArrayList<Attachment>();
     attachmentArray.add(attachment);
 
-    this.internalGetAttachments(attachmentArray, bodyType,
-        additionalProperties, ServiceErrorHandling.ThrowOnError);
+    this.internalGetAttachments(attachmentArray, bodyType, additionalProperties,
+                                ServiceErrorHandling.ThrowOnError);
 
   }
 
@@ -1551,7 +1542,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    * @param parentItemId the parent item id
    * @param attachments  the attachments
    * @return Service response collection.
-   * @throws microsoft.exchange.webservices.data.exception.ServiceResponseException the service response exception
+   * @throws ServiceResponseException the service response exception
    * @throws Exception                the exception
    */
   public ServiceResponseCollection<CreateAttachmentResponse> createAttachments(String parentItemId,
@@ -1603,8 +1594,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    */
   public NameResolutionCollection resolveName(String nameToResolve)
       throws Exception {
-    return this.resolveName(nameToResolve,
-        ResolveNameSearchLocation.ContactsThenDirectory, false);
+    return this.resolveName(nameToResolve, ResolveNameSearchLocation.ContactsThenDirectory, false);
   }
 
   /**
@@ -1624,8 +1614,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       Iterable<FolderId> parentFolderIds,
       ResolveNameSearchLocation searchScope, boolean returnContactDetails)
       throws Exception {
-    return resolveName(nameToResolve, parentFolderIds, searchScope,
-        returnContactDetails, null);
+    return resolveName(nameToResolve, parentFolderIds, searchScope, returnContactDetails, null);
 
   }
 
@@ -1641,9 +1630,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    * @param returnContactDetails   Indicates whether full contact information should be returned
    *                               for each of the found contacts.
    * @param contactDataPropertySet The property set for the contact details
-   * @return A collection of name resolutions whose names match the one
-   * passed as a parameter.
-   * @throws Exception
+   * @return a collection of name resolutions whose names match the one passed as a parameter
+   * @throws Exception on error
    */
   public NameResolutionCollection resolveName(String nameToResolve,
       Iterable<FolderId> parentFolderIds,
@@ -1683,7 +1671,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    * @param contactDataPropertySet The property set for the contact details
    * @return A collection of name resolutions whose names match the one
    * passed as a parameter.
-   * @throws Exception
+   * @throws Exception on error
    */
   public NameResolutionCollection resolveName(String nameToResolve,
       ResolveNameSearchLocation searchScope,
@@ -1708,8 +1696,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   public NameResolutionCollection resolveName(String nameToResolve,
       ResolveNameSearchLocation searchScope, boolean returnContactDetails)
       throws Exception {
-    return this.resolveName(nameToResolve, null, searchScope,
-        returnContactDetails);
+    return this.resolveName(nameToResolve, null, searchScope, returnContactDetails);
   }
 
   /**
@@ -1780,12 +1767,10 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    *
    * @param mailboxSmtpAddress The e-mail address of the user.
    * @return The password expiration date
-   * @throws Exception
+   * @throws Exception on error
    */
-  public Date getPasswordExpirationDate(String mailboxSmtpAddress)
-      throws Exception {
-    GetPasswordExpirationDateRequest request = new GetPasswordExpirationDateRequest(
-        this);
+  public Date getPasswordExpirationDate(String mailboxSmtpAddress) throws Exception {
+    GetPasswordExpirationDateRequest request = new GetPasswordExpirationDateRequest(this);
     request.setMailboxSmtpAddress(mailboxSmtpAddress);
 
     return request.execute().getPasswordExpirationDate();
@@ -1802,7 +1787,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    *                   subscription.
    * @param eventTypes The event types to subscribe to.
    * @return A PullSubscription representing the new subscription.
-   * @throws Exception
+   * @throws Exception on error
    */
   public PullSubscription subscribeToPullNotifications(
       Iterable<FolderId> folderIds, int timeout, String watermark,
@@ -1835,8 +1820,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       throws Exception {
     EwsUtilities.validateParamCollection(folderIds.iterator(), "folderIds");
 
-    return this.buildSubscribeToPullNotificationsRequest(folderIds,
-        timeout, watermark, eventTypes).beginExecute(callback, null);
+    return this.buildSubscribeToPullNotificationsRequest(folderIds, timeout, watermark,
+                                                         eventTypes).beginExecute(callback);
   }
 
   /**
@@ -1881,8 +1866,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     EwsUtilities.validateMethodVersion(this, ExchangeVersion.Exchange2010,
         "BeginSubscribeToPullNotificationsOnAllFolders");
 
-    return this.buildSubscribeToPullNotificationsRequest(null, timeout,
-        watermark, eventTypes).beginExecute(null, null);
+    return this.buildSubscribeToPullNotificationsRequest(null, timeout, watermark, eventTypes).beginExecute(
+        null);
   }
 
   /**
@@ -1968,8 +1953,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    */
   public IAsyncResult beginUnsubscribe(AsyncCallback callback, Object state, String subscriptionId)
       throws Exception {
-    return this.buildUnsubscribeRequest(subscriptionId).beginExecute(
-        callback, null);
+    return this.buildUnsubscribeRequest(subscriptionId).beginExecute(callback);
   }
 
   /**
@@ -2034,7 +2018,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   public IAsyncResult beginGetEvents(AsyncCallback callback, Object state, String subscriptionId,
       String watermark) throws Exception {
     return this.buildGetEventsRequest(subscriptionId, watermark)
-        .beginExecute(callback, null);
+        .beginExecute(callback);
   }
 
   /**
@@ -2094,8 +2078,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     EwsUtilities.validateParamCollection(folderIds.iterator(), "folderIds");
 
     return this.buildSubscribeToPushNotificationsRequest(folderIds, url,
-        frequency, watermark, eventTypes).execute().getResponseAtIndex(
-        0).getSubscription();
+        frequency, watermark, eventTypes).execute().getResponseAtIndex(0).getSubscription();
   }
 
   /**
@@ -2121,8 +2104,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       throws Exception {
     EwsUtilities.validateParamCollection(folderIds.iterator(), "folderIds");
 
-    return this.buildSubscribeToPushNotificationsRequest(folderIds, url,
-        frequency, watermark, eventTypes).beginExecute(callback, null);
+    return this.buildSubscribeToPushNotificationsRequest(folderIds, url, frequency, watermark,
+                                                         eventTypes).beginExecute(callback);
   }
 
   /**
@@ -2143,8 +2126,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
         "SubscribeToPushNotificationsOnAllFolders");
 
     return this.buildSubscribeToPushNotificationsRequest(null, url,
-        frequency, watermark, eventTypes).execute().getResponseAtIndex(
-        0).getSubscription();
+        frequency, watermark, eventTypes).execute().getResponseAtIndex(0).getSubscription();
   }
 
   /**
@@ -2170,8 +2152,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     EwsUtilities.validateMethodVersion(this, ExchangeVersion.Exchange2010,
         "BeginSubscribeToPushNotificationsOnAllFolders");
 
-    return this.buildSubscribeToPushNotificationsRequest(null, url,
-        frequency, watermark, eventTypes).beginExecute(callback, null);
+    return this.buildSubscribeToPushNotificationsRequest(null, url, frequency, watermark,
+                                                         eventTypes).beginExecute(callback);
   }
 
 
@@ -2264,36 +2246,12 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    */
   public StreamingSubscription subscribeToStreamingNotificationsOnAllFolders(
       EventType... eventTypes) throws Exception {
-    EwsUtilities.validateMethodVersion(this,
-        ExchangeVersion.Exchange2010_SP1,
-        "SubscribeToStreamingNotificationsOnAllFolders");
+    EwsUtilities.validateMethodVersion(this, ExchangeVersion.Exchange2010_SP1,
+                                       "SubscribeToStreamingNotificationsOnAllFolders");
 
     return this.buildSubscribeToStreamingNotificationsRequest(null,
         eventTypes).execute().getResponseAtIndex(0).getSubscription();
   }
-
-	/*
-	 * Subscribes to streaming notification. Calling this method results in a
-	 * call to EWS.
-	 * 
-	 * @param folderIds
-	 *            The Ids of the folder to subscribe to.
-	 * @param eventTypes
-	 *            The event types to subscribe to.
-	 * @return A StreamingSubscription representing the new subscription.
-	 * @throws Exception
-	public StreamingSubscription subscribeToStreamingNotifications(
-			Iterable<FolderId> folderIds, EventType... eventTypes)
-			throws Exception {
-		EwsUtilities.validateMethodVersion(this,
-				ExchangeVersion.Exchange2010_SP1,
-				"SubscribeToStreamingNotifications");
-
-		EwsUtilities.validateParamCollection(folderIds.iterator(), "folderIds");
-
-		return this.buildSubscribeToStreamingNotificationsRequest(folderIds,
-				eventTypes).execute().getResponseAtIndex(0).getSubscription();
-	}*/
 
   /**
    * Begins an asynchronous request to subscribe to streaming notification.
@@ -2316,28 +2274,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
     EwsUtilities.validateParamCollection(folderIds.iterator(), "folderIds");
 
     return this.buildSubscribeToStreamingNotificationsRequest(folderIds,
-        eventTypes).beginExecute(callback, null);
+        eventTypes).beginExecute(callback);
   }
-
-  /**
-   * Subscribes to streaming notification on all folder in the authenticated
-   * user's mailbox. Calling this method results in a call to EWS.
-   *
-   *@param eventTypes
-   *            The event types to subscribe to. @ returns A
-   *            StreamingSubscription representing the new subscription.
-   * @throws Exception
-   * @throws Exception
-   **/
-	/*public StreamingSubscription SubscribeToStreamingNotificationsOnAllFolders(
-			EventType... eventTypes) throws Exception, Exception {
-		EwsUtilities.validateMethodVersion(this,
-				ExchangeVersion.Exchange2010_SP1,
-				"SubscribeToStreamingNotificationsOnAllFolders");
-
-		return this.BuildSubscribeToStreamingNotificationsRequest(null,
-				eventTypes).execute().getResponseAtIndex(0).getSubscription();
-	}*/
 
   /**
    * Begins an asynchronous request to subscribe to streaming notification on
@@ -2356,7 +2294,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
         "BeginSubscribeToStreamingNotificationsOnAllFolders");
 
     return this.buildSubscribeToStreamingNotificationsRequest(null,
-        eventTypes).beginExecute(callback, null);
+        eventTypes).beginExecute(callback);
   }
 
   /**
@@ -2459,7 +2397,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       SyncFolderItemsScope syncScope, String syncState) throws Exception {
     return this.buildSyncFolderItemsRequest(syncFolderId, propertySet,
         ignoredItemIds, maxChangesReturned, syncScope, syncState)
-        .beginExecute(callback, null);
+        .beginExecute(callback);
   }
 
   /**
@@ -2548,7 +2486,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       PropertySet propertySet,
       String syncState) throws Exception {
     return this.buildSyncFolderHierarchyRequest(syncFolderId, propertySet,
-        syncState).beginExecute(callback, null);
+        syncState).beginExecute(callback);
   }
 
   /**
@@ -2823,11 +2761,10 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       StringList categories, boolean enableAlwaysDelete,
       FolderId destinationFolderId, ServiceErrorHandling errorHandlingMode)
       throws Exception {
-    EwsUtilities.EwsAssert(
-        actionType == ConversationActionType.AlwaysCategorize
-            || actionType == ConversationActionType.AlwaysMove
-            || actionType == ConversationActionType.AlwaysDelete,
-        "ApplyConversationAction", "Invalic actionType");
+    EwsUtilities.ewsAssert(actionType == ConversationActionType.AlwaysCategorize
+                           || actionType == ConversationActionType.AlwaysMove
+                           || actionType == ConversationActionType.AlwaysDelete, "ApplyConversationAction",
+                           "Invalic actionType");
 
     EwsUtilities.validateParam(conversationIds, "conversationId");
     EwsUtilities.validateMethodVersion(this,
@@ -2872,10 +2809,9 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       FolderId contextFolderId, FolderId destinationFolderId,
       DeleteMode deleteType, Boolean isRead,
       ServiceErrorHandling errorHandlingMode) throws Exception {
-    EwsUtilities.EwsAssert(actionType == ConversationActionType.Move
-            || actionType == ConversationActionType.Delete
-            || actionType == ConversationActionType.SetReadState
-            || actionType == ConversationActionType.Copy,
+    EwsUtilities.ewsAssert(
+        actionType == ConversationActionType.Move || actionType == ConversationActionType.Delete
+        || actionType == ConversationActionType.SetReadState || actionType == ConversationActionType.Copy,
         "ApplyConversationOneTimeAction", "Invalid actionType");
 
     EwsUtilities.validateParamCollection(idTimePairs.iterator(),
@@ -3459,9 +3395,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
    */
   public void loadPropertiesForUserConfiguration(UserConfiguration userConfiguration,
       UserConfigurationProperties properties) throws Exception {
-    EwsUtilities.EwsAssert(userConfiguration != null,
-        "ExchangeService.LoadPropertiesForUserConfiguration",
-        "userConfiguration is null");
+    EwsUtilities.ewsAssert(userConfiguration != null, "ExchangeService.LoadPropertiesForUserConfiguration",
+                           "userConfiguration is null");
 
     GetUserConfigurationRequest request = new GetUserConfigurationRequest(
         this);
@@ -3667,6 +3602,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       throws Exception {
 
     AutodiscoverService autodiscoverService = new AutodiscoverService(this, requestedServerVersion);
+    autodiscoverService.setWebProxy(getWebProxy());
+
     autodiscoverService
         .setRedirectionUrlValidationCallback(validateRedirectionUrlCallback);
     autodiscoverService.setEnableScpLookup(this.getEnableScpLookup());
@@ -3809,6 +3746,24 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   }
 
   /**
+   * Prepares a http web request from a pooling connection manager, used for subscriptions.
+   * 
+   * @return A http web request
+   * @throws ServiceLocalException The service local exception
+   * @throws java.net.URISyntaxException the uRI syntax exception
+   */
+  public HttpWebRequest prepareHttpPoolingWebRequest()
+	      throws ServiceLocalException, URISyntaxException {
+	    try {
+	      this.url = this.adjustServiceUriFromCredentials(this.getUrl());
+	    } catch (Exception e) {
+	      LOG.error(e);
+	    }
+	    return this.prepareHttpPoolingWebRequestForUrl(url, this
+	        .getAcceptGzipEncoding(), true);
+	  }
+
+  /**
    * Processes an HTTP error response.
    *
    * @param httpWebResponse The HTTP web response.
@@ -3887,8 +3842,8 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   }
 
   /**
-   * Sets the DateTime precision for DateTime values
-   * Web Services.
+   * Sets the DateTime precision for DateTime values Web Services.
+   * @param d date time precision
    */
   public void setDateTimePrecision(DateTimePrecision d) {
     this.dateTimePrecision = d;

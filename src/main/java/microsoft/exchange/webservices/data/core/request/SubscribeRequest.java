@@ -28,12 +28,12 @@ import microsoft.exchange.webservices.data.core.EwsUtilities;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlAttributeNames;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
+import microsoft.exchange.webservices.data.core.enumeration.service.error.ServiceErrorHandling;
 import microsoft.exchange.webservices.data.core.response.SubscribeResponse;
-import microsoft.exchange.webservices.data.enumeration.EventType;
-import microsoft.exchange.webservices.data.enumeration.ServiceErrorHandling;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceValidationException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.notification.EventType;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceValidationException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 import microsoft.exchange.webservices.data.misc.FolderIdWrapperList;
 import microsoft.exchange.webservices.data.notification.SubscriptionBase;
 
@@ -148,8 +148,8 @@ abstract class SubscribeRequest<TSubscription extends SubscriptionBase> extends
    * Internal method to write XML elements.
    *
    * @param writer the writer
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws ServiceXmlSerializationException    the service xml serialization exception
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException the service xml serialization exception
    */
   protected abstract void internalWriteElementsToXml(
       EwsServiceXmlWriter writer) throws XMLStreamException, ServiceXmlSerializationException;
@@ -256,4 +256,9 @@ abstract class SubscribeRequest<TSubscription extends SubscriptionBase> extends
     this.watermark = watermark;
   }
 
+  @Override
+	protected HttpWebRequest buildEwsHttpWebRequest() throws Exception
+	{
+		return super.buildEwsHttpPoolingWebRequest();
+	}
 }

@@ -23,13 +23,8 @@
 
 package microsoft.exchange.webservices.data.autodiscover;
 
-import microsoft.exchange.webservices.data.autodiscover.exception.AutodiscoverLocalException;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
 
-import javax.xml.stream.XMLStreamException;
-
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -38,7 +33,6 @@ import java.util.List;
  *
  * @param <T1>      the generic type
  * @param <T2>      the generic type
- * @param <T3>      the generic type
  * @param <TResult> the generic type
  */
 public interface IFunctionDelegate<T1 extends List<?>, T2 extends List<?>, TResult> {
@@ -49,14 +43,10 @@ public interface IFunctionDelegate<T1 extends List<?>, T2 extends List<?>, TResu
    * @param arg1 the arg1
    * @param arg2 the arg2
    * @param arg3 the arg3
+   * @param arg4 the arg4
    * @return the t result
-   * @throws AutodiscoverLocalException          the autodiscover local exception
-   * @throws javax.xml.stream.XMLStreamException the xML stream exception
-   * @throws java.io.IOException                 Signals that an I/O exception has occurred.
-   * @throws ServiceLocalException               the service local exception
-   * @throws Exception                           the exception
+   * @throws Exception the exception
    */
-  TResult func(T1 arg1, T2 arg2, ExchangeVersion arg3, URI arg4)
-      throws AutodiscoverLocalException, XMLStreamException, IOException, ServiceLocalException, Exception;
+  TResult func(T1 arg1, T2 arg2, ExchangeVersion arg3, URI arg4) throws Exception;
 
 }

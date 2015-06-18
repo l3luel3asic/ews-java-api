@@ -28,10 +28,10 @@ import microsoft.exchange.webservices.data.core.EwsServiceXmlWriter;
 import microsoft.exchange.webservices.data.core.ExchangeService;
 import microsoft.exchange.webservices.data.core.XmlElementNames;
 import microsoft.exchange.webservices.data.core.response.GetInboxRulesResponse;
-import microsoft.exchange.webservices.data.enumeration.ExchangeVersion;
-import microsoft.exchange.webservices.data.enumeration.XmlNamespace;
-import microsoft.exchange.webservices.data.exception.ServiceLocalException;
-import microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException;
+import microsoft.exchange.webservices.data.core.enumeration.misc.ExchangeVersion;
+import microsoft.exchange.webservices.data.core.enumeration.misc.XmlNamespace;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceLocalException;
+import microsoft.exchange.webservices.data.core.exception.service.local.ServiceXmlSerializationException;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -85,8 +85,8 @@ public final class GetInboxRulesRequest extends SimpleServiceRequestBase<GetInbo
    * Writes XML elements.
    *
    * @param writer The writer.
-   * @throws javax.xml.stream.XMLStreamException
-   * @throws microsoft.exchange.webservices.data.exception.ServiceXmlSerializationException
+   * @throws XMLStreamException the XML stream exception
+   * @throws ServiceXmlSerializationException
    */
   @Override
   protected void writeElementsToXml(EwsServiceXmlWriter writer)
@@ -136,7 +136,7 @@ public final class GetInboxRulesRequest extends SimpleServiceRequestBase<GetInbo
    *
    * @return Service response.
    * @throws Exception
-   * @throws microsoft.exchange.webservices.data.exception.ServiceLocalException
+   * @throws ServiceLocalException
    */
   public GetInboxRulesResponse execute()
       throws ServiceLocalException, Exception {
