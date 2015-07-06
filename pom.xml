@@ -146,20 +146,22 @@
     </ciManagement>
 
     <scm>
-        <url>https://github.com/OfficeDev/ews-java-api</url>
-        <connection>scm:git:ssh://git@github.com:OfficeDev/ews-java-api.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:OfficeDev/ews-java-api.git</developerConnection>
+        <connection>scm:git:ssh://git.ravn.co.uk/pipeline/ews-java-api.git</connection>
+        <developerConnection>scm:git:ssh://git@git.ravn.co.uk/pipeline/ews-java-api.git</developerConnection>
+        <url>https://git.ravn.co.uk/pipeline/ews-java-api</url>
     </scm>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh-snapshot</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>mavn.ravn.co.uk</id>
+            <name>mavn.ravn.co.uk-releases</name>
+            <url>http://mavn.ravn.co.uk/artifactory/libs-releases-local</url>
         </repository>
+        <snapshotRepository>
+            <id>mavn.ravn.co.uk</id>
+            <name>mavn.ravn.co.uk-snapshots</name>
+            <url>http://mavn.ravn.co.uk/artifactory/libs-snapshots-local</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
