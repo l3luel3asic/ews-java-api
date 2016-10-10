@@ -46,6 +46,7 @@ import microsoft.exchange.webservices.data.core.exception.service.local.ServiceX
 import microsoft.exchange.webservices.data.core.exception.xml.XmlException;
 import microsoft.exchange.webservices.data.misc.SoapFaultDetails;
 import microsoft.exchange.webservices.data.security.XmlNodeType;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -632,7 +633,13 @@ public abstract class ServiceRequestBase<T> {
   protected HttpWebRequest validateAndEmitRequest() throws Exception {
     this.validate();
 
-    HttpWebRequest request = this.buildEwsHttpWebRequest();
+    HttpWebRequest request;
+    
+    if (service.getMaximumPoolingConnections() > 1) {
+        request = buildEwsHttpPoolingWebRequest();
+    } else {
+        request = buildEwsHttpWebRequest();
+    }
 
     try {
       try {
@@ -644,12 +651,7 @@ public abstract class ServiceRequestBase<T> {
         throw new ServiceRequestException(String.format("The request failed. %s", e.getMessage()), e);
       }
     } catch (Exception e) {
-      try {
-        request.close();
-      } catch (Exception e2) {
-        // Ignore exception while closing the request.
-      }
-
+      IOUtils.closeQuietly(request);
       throw e;
     }
   }

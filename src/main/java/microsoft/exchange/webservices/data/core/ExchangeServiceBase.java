@@ -56,6 +56,7 @@ import microsoft.exchange.webservices.data.credential.ExchangeCredentials;
 import microsoft.exchange.webservices.data.misc.EwsTraceListener;
 import microsoft.exchange.webservices.data.misc.ITraceListener;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.AuthenticationStrategy;
@@ -206,19 +207,18 @@ public abstract class ExchangeServiceBase implements Closeable {
   }
 
   private void initializeHttpPoolingClient() {
-	    Registry<ConnectionSocketFactory> registry = createConnectionSocketFactoryRegistry();
-	    PoolingHttpClientConnectionManager httpConnectionManager = new PoolingHttpClientConnectionManager(registry);
-	    httpConnectionManager.setMaxTotal(maximumPoolingConnections);
-	    httpConnectionManager.setDefaultMaxPerRoute(maximumPoolingConnections);
-	    AuthenticationStrategy authStrategy = new CookieProcessingTargetAuthenticationStrategy();
+    Registry<ConnectionSocketFactory> registry = createConnectionSocketFactoryRegistry();
+    PoolingHttpClientConnectionManager httpConnectionManager = new PoolingHttpClientConnectionManager(registry);
+    httpConnectionManager.setMaxTotal(maximumPoolingConnections);
+    httpConnectionManager.setDefaultMaxPerRoute(maximumPoolingConnections);
+    AuthenticationStrategy authStrategy = new CookieProcessingTargetAuthenticationStrategy();
 
-	    httpPoolingClient = HttpClients.custom()
-	      .setConnectionManager(httpConnectionManager)
-	      .setTargetAuthenticationStrategy(authStrategy)
-	      .build();
-	  }
-  
-  
+    httpPoolingClient = HttpClients.custom()
+        .setConnectionManager(httpConnectionManager)
+        .setTargetAuthenticationStrategy(authStrategy)
+        .build();
+  }
+
   /**
    * Sets the maximum number of connections for the pooling connection manager which is used for
    * subscriptions.
@@ -265,19 +265,8 @@ public abstract class ExchangeServiceBase implements Closeable {
 
   @Override
   public void close() {
-    try {
-      httpClient.close();
-    } catch (IOException e) {
-      LOG.debug(e);
-    }
-
-    if (httpPoolingClient != null) {
-      try {
-        httpPoolingClient.close();
-      } catch (IOException e) {
-        LOG.debug(e);
-      }
-    }
+    IOUtils.closeQuietly(httpClient);
+    IOUtils.closeQuietly(httpPoolingClient);
   }
 
   // Event handlers
@@ -344,26 +333,27 @@ public abstract class ExchangeServiceBase implements Closeable {
    * @throws java.net.URISyntaxException the uRI syntax exception
    */
   protected HttpWebRequest prepareHttpPoolingWebRequestForUrl(URI url, boolean acceptGzipEncoding,
-	      boolean allowAutoRedirect) throws ServiceLocalException, URISyntaxException {
-	    // Verify that the protocol is something that we can handle
-	    String scheme = url.getScheme();
-	    if (!scheme.equalsIgnoreCase(EWSConstants.HTTP_SCHEME)
-	      && !scheme.equalsIgnoreCase(EWSConstants.HTTPS_SCHEME)) {
-	      String strErr = String.format("Protocol %s isn't supported for service request.", scheme);
-	      throw new ServiceLocalException(strErr);
-	    }
+      boolean allowAutoRedirect) throws ServiceLocalException, URISyntaxException {
+    // Verify that the protocol is something that we can handle
+    String scheme = url.getScheme();
+    if (!scheme.equalsIgnoreCase(EWSConstants.HTTP_SCHEME)
+        && !scheme.equalsIgnoreCase(EWSConstants.HTTPS_SCHEME)) {
+      String strErr = String.format("Protocol %s isn't supported for service request.", scheme);
+      throw new ServiceLocalException(strErr);
+    }
 
-	    if (httpPoolingClient == null)
-	   	 initializeHttpPoolingClient();
-	    HttpClientWebRequest request = new HttpClientWebRequest(httpPoolingClient, httpContext);
-	    prepareHttpWebRequestForUrl(url, acceptGzipEncoding, allowAutoRedirect, request);
+    if (httpPoolingClient == null) {
+      initializeHttpPoolingClient();
+    }
 
-	    return request;
-	  }
+    HttpClientWebRequest request = new HttpClientWebRequest(httpPoolingClient, httpContext);
+    prepareHttpWebRequestForUrl(url, acceptGzipEncoding, allowAutoRedirect, request);
 
-private void prepareHttpWebRequestForUrl(URI url, boolean acceptGzipEncoding, boolean allowAutoRedirect, HttpClientWebRequest request)
-		throws ServiceLocalException, URISyntaxException
-{
+    return request;
+  }
+
+  private void prepareHttpWebRequestForUrl(URI url, boolean acceptGzipEncoding, boolean allowAutoRedirect,
+      HttpClientWebRequest request) throws ServiceLocalException, URISyntaxException {
     try {
       request.setUrl(url.toURL());
     } catch (MalformedURLException e) {
@@ -379,7 +369,7 @@ private void prepareHttpWebRequestForUrl(URI url, boolean acceptGzipEncoding, bo
     request.setAllowAutoRedirect(allowAutoRedirect);
     request.setAcceptGzipEncoding(acceptGzipEncoding);
     request.setHeaders(getHttpHeaders());
-
+    request.setProxy(getWebProxy());
     prepareCredentials(request);
 
     request.prepareConnection();
@@ -898,5 +888,9 @@ private void prepareHttpWebRequestForUrl(URI url, boolean acceptGzipEncoding, bo
 
       return ExchangeServiceBase.binarySecret;
     }
+  }
+
+  public int getMaximumPoolingConnections() {
+    return maximumPoolingConnections;
   }
 }

@@ -50,8 +50,11 @@ import microsoft.exchange.webservices.data.core.exception.service.local.ServiceV
 import microsoft.exchange.webservices.data.core.exception.service.local.ServiceVersionException;
 import microsoft.exchange.webservices.data.misc.TimeSpan;
 import microsoft.exchange.webservices.data.property.complex.ItemAttachment;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.Period;
+import org.joda.time.format.ISOPeriodFormat;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -235,7 +238,7 @@ public final class EwsUtilities {
   private static final Pattern PATTERN_DAY = Pattern.compile("(\\d+)D");
   private static final Pattern PATTERN_HOUR = Pattern.compile("(\\d+)H");
   private static final Pattern PATTERN_MINUTES = Pattern.compile("(\\d+)M");
-  private static final Pattern PATTERN_SECONDS = Pattern.compile("(\\d+).");
+  private static final Pattern PATTERN_SECONDS = Pattern.compile("(\\d+)\\."); // Need to escape dot, otherwise it matches any char
   private static final Pattern PATTERN_MILLISECONDS = Pattern.compile("(\\d+)S");
 
 
@@ -871,183 +874,26 @@ public final class EwsUtilities {
     // TODO: Need to check whether this should be the equivalent or not
     Matcher m = PATTERN_TIME_SPAN.matcher(xsDuration);
     boolean negative = false;
-    LOG.debug(m.find());
-    if (m.find()) {
-      negative = true;
-    }
-    LOG.debug(m.group());
-
-    // Year
-    m = PATTERN_YEAR.matcher(xsDuration);
-    LOG.debug(m.find());
-    int year = 0;
-    if (m.find()) {
-      year = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("Y")));
-    }
-
-    // Month
-    m = PATTERN_MONTH.matcher(xsDuration);
-    LOG.debug(m.find());
-    int month = 0;
-    if (m.find()) {
-      month = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("M")));
-    }
-
-    // Day
-    m = PATTERN_DAY.matcher(xsDuration);
-    LOG.debug(m.find());
-    int day = 0;
-    if (m.find()) {
-      day = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("D")));
-    }
-
-    // Hour
-    m = PATTERN_HOUR.matcher(xsDuration);
-    LOG.debug(m.find());
-    int hour = 0;
-    if (m.find()) {
-      hour = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("H")));
-    }
-
-    // Minute
-    m = PATTERN_MINUTES.matcher(xsDuration);
-    LOG.debug(m.find());
-    int minute = 0;
-    if (m.find()) {
-      minute = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("M")));
-    }
-
-    // Seconds
-    m = PATTERN_SECONDS.matcher(xsDuration);
-    LOG.debug(m.find());
-    int seconds = 0;
-    if (m.find()) {
-      seconds = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf(".")));
-    }
-
-    int milliseconds = 0;
-    m = PATTERN_MILLISECONDS.matcher(xsDuration);
-    LOG.debug(m.find());
-    if (m.find()) {
-      // Only allowed 4 digits of precision
-      if (m.group().length() > 5) {
-        milliseconds = Integer.parseInt(m.group().substring(0, 4));
-      } else {
-        seconds = Integer.parseInt(m.group().substring(0,
-            m.group().indexOf("S")));
-      }
-    }
-
-    // Apply conversions of year and months to days.
-    // Year = 365 days
-    // Month = 30 days
-    day = day + (year * 365) + (month * 30);
-    // TimeSpan retval = new TimeSpan(day, hour, minute, seconds,
-    // milliseconds);
-    long retval = (((((((day * 24) + hour) * 60) + minute) * 60) +
-        seconds) * 1000) + milliseconds;
-    if (negative) {
-      retval = -retval;
-    }
-    return new TimeSpan(retval);
-
-  }
-
-  /**
-   * Takes an xs:duration string as defined by the W3 Consortiums
-   * Recommendation "XML Schema Part 2: Datatypes Second Edition",
-   * http://www.w3.org/TR/xmlschema-2/#duration, and converts it into a
-   * System.TimeSpan structure This method uses the following approximations:
-   * 1 year = 365 days 1 month = 30 days Additionally, it only allows for four
-   * decimal points of seconds precision.
-   *
-   * @param xsDuration xs:duration string to convert
-   * @return System.TimeSpan structure
-   */
-  public static TimeSpan getXSDurationToTimeSpanValue(String xsDuration) {
-    // TODO: Need to check whether this should be the equivalent or not
-    Matcher m = PATTERN_TIME_SPAN.matcher(xsDuration);
-    boolean negative = false;
     if (m.find()) {
       negative = true;
     }
 
-    // Year
-    //    m = Pattern.compile("(\\d+)Y").matcher(xsDuration);
-    //    int year = 0;
-    //    if (m.find()) {
-    //      year = Integer.parseInt(m.group().substring(0,
-    //          m.group().indexOf("Y")));
-    //    }
-
-    // Month
-    //    m = Pattern.compile("(\\d+)M").matcher(xsDuration);
-    //    int month = 0;
-    //    if (m.find()) {
-    //      month = Integer.parseInt(m.group().substring(0,
-    //          m.group().indexOf("M")));
-    //    }
-
-    // Day
-    m = PATTERN_DAY.matcher(xsDuration);
-    long day = 0;
-    if (m.find()) {
-      day = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("D")));
+    // Removing leading '-'
+    if (negative) {
+      xsDuration = xsDuration.replace("-P", "P");
     }
 
-    // Hour
-    m = PATTERN_HOUR.matcher(xsDuration);
-    int hour = 0;
-    if (m.find()) {
-      hour = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("H")));
-    }
-
-    // Minute
-    m = PATTERN_MINUTES.matcher(xsDuration);
-    int minute = 0;
-    if (m.find()) {
-      minute = Integer.parseInt(m.group().substring(0,
-          m.group().indexOf("M")));
-    }
-
-    // Seconds
-    m = PATTERN_SECONDS.matcher(xsDuration);
-    int seconds = 0;
-    int milliseconds = 0;
-    m = PATTERN_MILLISECONDS.matcher(xsDuration);
-    if (m.find()) {
-      // Only allowed 4 digits of precision
-      if (m.group().length() > 5) {
-        milliseconds = Integer.parseInt(m.group().substring(0, 4));
-      } else {
-        seconds = Integer.parseInt(m.group().substring(0, m.group().indexOf("S")));
-      }
-    }
-
-    // Apply conversions of year and months to days.
-    // Year = 365 days
-    // Month = 30 days
-    //	day = day + (year * 365) + (month * 30);
-    //TimeSpan retval = new TimeSpan(day, hour, minute, seconds,
-    // milliseconds);
-
-    long retval =
-        day * TimeSpan.DAYS + hour * TimeSpan.HOURS + minute * TimeSpan.MINUTES + seconds * TimeSpan.SECONDS
-            + milliseconds * TimeSpan.MILLISECONDS;
+    Period period = Period.parse(xsDuration, ISOPeriodFormat.standard());
+      
+    long retval = period.toStandardDuration().getMillis();
+    
     if (negative) {
       retval = -retval;
     }
-    return new TimeSpan(retval);
-  }
 
+    return new TimeSpan(retval);
+
+  }
 
   /**
    * Time span to xs time.
